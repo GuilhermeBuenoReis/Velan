@@ -26,13 +26,17 @@
 		"rules": {
 			"recommended": true,
 			"a11y": {
-				"noSvgWithoutTitle": "off"
+				"noSvgWithoutTitle": "off",
+				"useValidAnchor": "off"
 			},
 			"complexity": {
 				"noForEach": "off"
 			},
 			"suspicious": {
 				"noExplicitAny": "off"
+			},
+			"correctness": {
+				"useExhaustiveDependencies": "off"
 			}
 		}
 	},

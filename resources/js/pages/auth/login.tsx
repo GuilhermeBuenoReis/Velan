@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Head, router } from '@inertiajs/react';
 import { Eye, EyeOff, LoaderCircle } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -10,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useUrlState } from '@/hooks/use-url-state';
 import { AuthLayout } from '@/layouts/auth-layout';
 import { register as registerRoute } from '@/routes';
 import { store as loginStore } from '@/routes/login';
@@ -39,17 +39,19 @@ export function Login({
   canResetPassword,
   onSwitchToRegister,
 }: LoginProps) {
-  const [mostrarSenha, setMostrarSenha] = useState(false);
-  const [erroGeral, setErroGeral] = useState<string | null>(null);
-  const [processando, setProcessando] = useState(false);
+  const [showPassword, setShowPassword] = useUrlState(
+    'login_show_password',
+    false
+  );
 
   const {
     control,
     register,
     handleSubmit,
     setError,
+    clearErrors,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -59,47 +61,63 @@ export function Login({
     },
   });
 
-  const onSubmit = handleSubmit(data => {
-    setErroGeral(null);
-    setProcessando(true);
+  function handleTogglePasswordVisibility() {
+    setShowPassword(prev => !prev);
+  }
 
-    router.post(
-      loginStore.url(),
-      {
-        email: data.email,
-        password: data.password,
-        remember: data.remember ? 'on' : '',
-      },
-      {
-        onError: serverErrors => {
-          let fallback: string | null = null;
+  function handleRememberChange(onChange: (value: boolean) => void) {
+    return (checked: boolean | 'indeterminate') => {
+      onChange(Boolean(checked));
+    };
+  }
 
-          Object.entries(serverErrors).forEach(([field, message]) => {
-            const mensagem = Array.isArray(message)
-              ? message.join(', ')
-              : message;
+  function handleLoginSubmit(data: LoginFormData) {
+    clearErrors('root');
 
-            if (field === 'email' || field === 'password') {
-              setError(field as keyof LoginFormData, {
+    return new Promise<void>(resolve => {
+      router.post(
+        loginStore.url(),
+        {
+          email: data.email,
+          password: data.password,
+          remember: data.remember ? 'on' : '',
+        },
+        {
+          onError: serverErrors => {
+            let fallback: string | null = null;
+
+            Object.entries(serverErrors).forEach(([field, message]) => {
+              const mensagem = Array.isArray(message)
+                ? message.join(', ')
+                : message;
+
+              if (field === 'email' || field === 'password') {
+                setError(field as keyof LoginFormData, {
+                  type: 'server',
+                  message: mensagem,
+                });
+              } else {
+                fallback = mensagem;
+              }
+            });
+
+            if (fallback) {
+              setError('root', {
                 type: 'server',
-                message: mensagem,
+                message: fallback,
               });
-            } else {
-              fallback = mensagem;
             }
-          });
-
-          setErroGeral(fallback);
-        },
-        onSuccess: () => {
-          reset({ email: '', password: '', remember: false });
-        },
-        onFinish: () => {
-          setProcessando(false);
-        },
-      }
-    );
-  });
+          },
+          onSuccess: () => {
+            reset({ email: '', password: '', remember: false });
+          },
+          onFinish: () => {
+            resolve();
+          },
+        }
+      );
+    });
+  }
 
   return (
     <AuthLayout>
@@ -118,7 +136,7 @@ export function Login({
         </p>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit(handleLoginSubmit)} className="space-y-6">
         <div className="space-y-3">
           <Label htmlFor="email" className="block text-[#EAEAEA]">
             E-mail
@@ -141,7 +159,7 @@ export function Login({
           </Label>
           <div className="relative">
             <Input
-              type={mostrarSenha ? 'text' : 'password'}
+              type={showPassword ? 'text' : 'password'}
               placeholder="••••••••"
               autoComplete="current-password"
               className="h-12 rounded-sm border-white/10 bg-[#0F0F17]/50 pr-12 text-[#EAEAEA] placeholder:text-[#A0A0B0]/50 transition-all focus:border-[#00C6AE] focus:ring-2 focus:ring-[#00C6AE]/20"
@@ -149,11 +167,11 @@ export function Login({
             />
             <button
               type="button"
-              onClick={() => setMostrarSenha(prev => !prev)}
+              onClick={handleTogglePasswordVisibility}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A0A0B0] transition-colors hover:text-[#00C6AE]"
-              aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+              aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
             >
-              {mostrarSenha ? (
+              {showPassword ? (
                 <EyeOff className="h-5 w-5" />
               ) : (
                 <Eye className="h-5 w-5" />
@@ -173,7 +191,7 @@ export function Login({
               render={({ field: { value, onChange } }) => (
                 <Checkbox
                   checked={value}
-                  onCheckedChange={checked => onChange(Boolean(checked))}
+                  onCheckedChange={handleRememberChange(onChange)}
                   className="border-white/20 data-[state=checked]:border-[#6C63FF] data-[state=checked]:bg-[#6C63FF]"
                 />
               )}
@@ -196,19 +214,19 @@ export function Login({
           )}
         </div>
 
-        {erroGeral && (
+        {errors.root?.message && (
           <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-            {erroGeral}
+            {errors.root.message}
           </div>
         )}
 
         <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
           <Button
             type="submit"
-            disabled={processando}
+            disabled={isSubmitting}
             className="h-12 w-full rounded-xl border-0 bg-gradient-to-r from-[#6C63FF] to-[#00C6AE] text-white shadow-lg shadow-[#6C63FF]/30 transition-all hover:from-[#5B52EE] hover:to-[#00B59D]"
           >
-            {processando && (
+            {isSubmitting && (
               <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
             )}
             Entrar
