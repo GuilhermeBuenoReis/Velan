@@ -15,7 +15,7 @@ import type { BreadcrumbItem, SharedData } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
-    title: 'Profile settings',
+    title: 'Perfil',
     href: edit().url,
   },
 ];
@@ -31,7 +31,7 @@ export function Profile({
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title="Profile settings" />
+      <Head title="Perfil" />
 
       <SettingsLayout>
         <div className="space-y-6">

@@ -9,7 +9,11 @@ const steps = [
     title: 'Agende com facilidade',
     description:
       'Sistema inteligente de agendamentos que se adapta à sua rotina e disponibilidade.',
-    color: '#6C63FF',
+    tone: {
+      solid: 'rgba(107,95,209,1)',
+      soft: 'rgba(107,95,209,0.16)',
+      glow: 'rgba(107,95,209,0.28)',
+    },
   },
   {
     id: createRandomId(),
@@ -17,7 +21,11 @@ const steps = [
     title: 'Gerencie sua clínica',
     description:
       'Painel completo para profissionais com métricas, histórico e ferramentas de gestão.',
-    color: '#00C6AE',
+    tone: {
+      solid: 'rgba(76,163,176,1)',
+      soft: 'rgba(76,163,176,0.16)',
+      glow: 'rgba(76,163,176,0.28)',
+    },
   },
   {
     id: createRandomId(),
@@ -25,32 +33,36 @@ const steps = [
     title: 'Acompanhe sua saúde',
     description:
       'Histórico médico completo, exames e evolução de tratamentos em um só lugar.',
-    color: '#F7C948',
+    tone: {
+      solid: 'rgba(89,193,120,1)',
+      soft: 'rgba(89,193,120,0.16)',
+      glow: 'rgba(89,193,120,0.28)',
+    },
   },
-];
+] as const;
 
 export function WelcomeHowItWorks() {
   return (
-    <section className="relative py-24 sm:py-32 bg-[#0F0F17]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative bg-[color:var(--bg)] py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
-          className="text-center mb-16 sm:mb-20"
+          className="mb-16 text-center sm:mb-20"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl sm:text-5xl mb-4">
-            <span className="bg-gradient-to-r from-[#6C63FF] to-[#00C6AE] bg-clip-text text-transparent">
+          <h2 className="mb-4 text-4xl sm:text-5xl">
+            <span className="bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] bg-clip-text text-transparent">
               Como funciona
             </span>
           </h2>
-          <p className="text-[#A0A0B0] max-w-2xl mx-auto">
+          <p className="mx-auto max-w-2xl text-[color:var(--text-secondary)]">
             Três passos simples para transformar sua experiência em saúde
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {steps.map((step, index) => {
             const Icon = step.icon;
             return (
@@ -63,52 +75,54 @@ export function WelcomeHowItWorks() {
                 whileHover={{ y: -8 }}
                 className="group relative"
               >
-                <div className="relative h-full bg-gradient-to-br from-[#1A152A] to-[#0F0F17] rounded-2xl border border-white/5 p-8 overflow-hidden">
+                <div className="relative h-full overflow-hidden rounded-2xl border border-sidebar-border bg-gradient-to-br from-[color:var(--surface)] to-[color:var(--surface-muted)] p-8">
                   <motion.div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                     style={{
-                      background: `radial-gradient(circle at 50% 0%, ${step.color}15, transparent 70%)`,
+                      background: `radial-gradient(circle at 50% 0%, ${step.tone.glow}, transparent 70%)`,
                     }}
                   />
 
                   <div className="relative mb-6">
                     <motion.div
-                      className="w-16 h-16 rounded-2xl flex items-center justify-center relative"
+                      className="relative flex h-16 w-16 items-center justify-center rounded-2xl"
                       style={{
-                        backgroundColor: `${step.color}20`,
+                        backgroundColor: step.tone.soft,
                       }}
                       whileHover={{ scale: 1.1 }}
                     >
-                      {/* Icon Glow */}
                       <div
                         className="absolute inset-0 rounded-2xl blur-xl opacity-50"
-                        style={{ backgroundColor: step.color }}
+                        style={{ backgroundColor: step.tone.glow }}
                       />
                       <Icon
                         className="relative z-10 h-8 w-8"
-                        style={{ color: step.color }}
+                        style={{ color: step.tone.solid }}
                       />
                     </motion.div>
                   </div>
 
-                  <h3 className="text-[#EAEAEA] mb-3">{step.title}</h3>
-                  <p className="text-[#A0A0B0]">{step.description}</p>
+                  <h3 className="mb-3 text-lg font-semibold text-foreground">
+                    {step.title}
+                  </h3>
+                  <p className="text-[color:var(--text-secondary)]">
+                    {step.description}
+                  </p>
 
-                  {/* Step Number */}
-                  <div className="absolute top-6 right-6 text-6xl opacity-5">
+                  <div className="absolute right-6 top-6 text-6xl text-foreground/5">
                     {index + 1}
                   </div>
 
                   <div
-                    className="absolute bottom-0 left-0 right-0 h-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    className="absolute bottom-0 left-0 right-0 h-1 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                     style={{
-                      background: `linear-gradient(90deg, transparent, ${step.color}, transparent)`,
+                      background: `linear-gradient(90deg, transparent, ${step.tone.glow}, transparent)`,
                     }}
                   />
                 </div>
 
                 {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-white/20 to-transparent" />
+                  <div className="absolute right-[-1rem] top-1/2 hidden h-0.5 w-8 bg-gradient-to-r from-foreground/10 to-transparent md:block" />
                 )}
               </motion.div>
             );

@@ -2,6 +2,12 @@ import { BarChart3, Clock, Lock, Shield, Users, Zap } from 'lucide-react';
 import { motion } from 'motion/react';
 import { createRandomId } from '@/utils/create-random-id';
 
+type BenefitTone = {
+  solid: string;
+  soft: string;
+  glow: string;
+};
+
 const benefits = [
   {
     id: createRandomId(),
@@ -9,7 +15,11 @@ const benefits = [
     title: 'Velocidade incomparável',
     description:
       'Interface otimizada para máxima performance. Carregamento instantâneo em qualquer dispositivo.',
-    color: '#F7C948',
+    tone: {
+      solid: 'rgba(76,163,176,1)',
+      soft: 'rgba(76,163,176,0.15)',
+      glow: 'rgba(76,163,176,0.28)',
+    } satisfies BenefitTone,
   },
   {
     id: createRandomId(),
@@ -17,7 +27,11 @@ const benefits = [
     title: 'Segurança total',
     description:
       'Dados criptografados end-to-end, compliance com LGPD e certificações internacionais.',
-    color: '#6C63FF',
+    tone: {
+      solid: 'rgba(107,95,209,1)',
+      soft: 'rgba(107,95,209,0.15)',
+      glow: 'rgba(107,95,209,0.28)',
+    } satisfies BenefitTone,
   },
   {
     id: createRandomId(),
@@ -25,7 +39,11 @@ const benefits = [
     title: 'Colaboração em tempo real',
     description:
       'Equipes médicas conectadas. Compartilhe informações de forma segura e instantânea.',
-    color: '#00C6AE',
+    tone: {
+      solid: 'rgba(142,128,240,1)',
+      soft: 'rgba(142,128,240,0.15)',
+      glow: 'rgba(142,128,240,0.28)',
+    } satisfies BenefitTone,
   },
   {
     id: createRandomId(),
@@ -33,7 +51,11 @@ const benefits = [
     title: 'Disponível 24/7',
     description:
       'Acesse suas informações a qualquer hora, de qualquer lugar. Sincronização automática em nuvem.',
-    color: '#A78BFA',
+    tone: {
+      solid: 'rgba(236,235,244,1)',
+      soft: 'rgba(236,235,244,0.18)',
+      glow: 'rgba(236,235,244,0.28)',
+    } satisfies BenefitTone,
   },
   {
     id: createRandomId(),
@@ -41,7 +63,11 @@ const benefits = [
     title: 'Insights inteligentes',
     description:
       'Analytics avançados e relatórios personalizados para tomada de decisão baseada em dados.',
-    color: '#00C6AE',
+    tone: {
+      solid: 'rgba(67,163,102,1)',
+      soft: 'rgba(67,163,102,0.15)',
+      glow: 'rgba(67,163,102,0.28)',
+    } satisfies BenefitTone,
   },
   {
     id: createRandomId(),
@@ -49,32 +75,36 @@ const benefits = [
     title: 'Privacidade garantida',
     description:
       'Seus dados pertencem a você. Controle total sobre quem acessa suas informações.',
-    color: '#6C63FF',
+    tone: {
+      solid: 'rgba(124,110,228,1)',
+      soft: 'rgba(124,110,228,0.15)',
+      glow: 'rgba(124,110,228,0.28)',
+    } satisfies BenefitTone,
   },
-];
+] as const;
 
 export function WelcomeBenefits() {
   return (
-    <section className="relative py-24 sm:py-32 bg-[#0F0F17]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative bg-[color:var(--bg)] py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
-          className="text-center mb-16 sm:mb-20"
+          className="mb-16 text-center sm:mb-20"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl sm:text-5xl mb-4">
-            <span className="bg-gradient-to-r from-[#F7C948] via-[#6C63FF] to-[#00C6AE] bg-clip-text text-transparent">
+          <h2 className="mb-4 text-4xl sm:text-5xl">
+            <span className="bg-gradient-to-r from-[var(--primary)] via-[var(--primary-hover)] to-[var(--accent)] bg-clip-text text-transparent">
               Por que escolher a Velan
             </span>
           </h2>
-          <p className="text-[#A0A0B0] max-w-2xl mx-auto">
+          <p className="mx-auto max-w-2xl text-[color:var(--text-secondary)]">
             Tecnologia de ponta combinada com experiência do usuário excepcional
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {benefits.map((benefit, index) => {
             const Icon = benefit.icon;
             return (
@@ -87,46 +117,45 @@ export function WelcomeBenefits() {
                 whileHover={{ y: -8 }}
                 className="group relative"
               >
-                {/* Card */}
-                <div className="relative h-full bg-gradient-to-br from-white/[0.03] to-transparent backdrop-blur-sm rounded-2xl border border-white/5 p-8 overflow-hidden">
-                  {/* Hover Glow */}
+                <div className="relative h-full overflow-hidden rounded-2xl border border-sidebar-border/70 bg-gradient-to-br from-[color:var(--surface)] to-[color:var(--surface-muted)]/60 p-8 backdrop-blur-sm">
                   <motion.div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                     style={{
-                      background: `radial-gradient(circle at top left, ${benefit.color}10, transparent 60%)`,
+                      background: `radial-gradient(circle at top left, ${benefit.tone.glow}, transparent 60%)`,
                     }}
                   />
 
                   <div className="relative mb-6">
                     <motion.div
-                      className="w-14 h-14 rounded-xl flex items-center justify-center relative"
+                      className="relative flex h-14 w-14 items-center justify-center rounded-xl"
                       style={{
-                        backgroundColor: `${benefit.color}15`,
+                        backgroundColor: benefit.tone.soft,
                       }}
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       transition={{ type: 'spring', stiffness: 300 }}
                     >
-                      {/* Icon Glow */}
                       <div
-                        className="absolute inset-0 rounded-xl blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-500"
-                        style={{ backgroundColor: benefit.color }}
+                        className="absolute inset-0 rounded-xl opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-60"
+                        style={{ backgroundColor: benefit.tone.glow }}
                       />
                       <Icon
                         className="relative z-10 h-7 w-7"
-                        style={{ color: benefit.color }}
+                        style={{ color: benefit.tone.solid }}
                       />
                     </motion.div>
                   </div>
 
-                  <h3 className="text-[#EAEAEA] mb-3">{benefit.title}</h3>
-                  <p className="text-[#A0A0B0] text-sm leading-relaxed">
+                  <h3 className="mb-3 text-lg font-semibold text-foreground">
+                    {benefit.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-[color:var(--text-secondary)]">
                     {benefit.description}
                   </p>
 
                   <div
-                    className="absolute top-0 right-0 w-20 h-20 opacity-5"
+                    className="absolute right-0 top-0 h-20 w-20 opacity-10"
                     style={{
-                      background: `radial-gradient(circle at top right, ${benefit.color}, transparent 70%)`,
+                      background: `radial-gradient(circle at top right, ${benefit.tone.glow}, transparent 70%)`,
                     }}
                   />
                 </div>

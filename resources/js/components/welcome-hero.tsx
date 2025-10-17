@@ -1,15 +1,16 @@
 import { ArrowRight, Play } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Button } from './ui/button';
+
 export function WelcomeHero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1A152A] via-[#0F0F17] to-[#00C6AE]/20">
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-[color:var(--surface)] via-[color:var(--bg)] to-[color:var(--accent)]/18">
         <motion.div
-          className="absolute top-1/4 -left-20 w-96 h-96 bg-[#6C63FF]/30 rounded-full blur-[128px]"
+          className="absolute top-1/4 -left-20 h-96 w-96 rounded-full bg-[color:var(--primary)]/28 blur-[128px]"
           animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
+            scale: [1, 1.15, 1],
+            opacity: [0.28, 0.45, 0.28],
           }}
           transition={{
             duration: 8,
@@ -19,10 +20,10 @@ export function WelcomeHero() {
         />
 
         <motion.div
-          className="absolute bottom-1/4 -right-20 w-96 h-96 bg-[#00C6AE]/30 rounded-full blur-[128px]"
+          className="absolute bottom-1/4 -right-20 h-96 w-96 rounded-full bg-[color:var(--accent)]/28 blur-[128px]"
           animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.3, 0.5, 0.3],
+            scale: [1, 1.25, 1],
+            opacity: [0.28, 0.48, 0.28],
           }}
           transition={{
             duration: 10,
@@ -32,22 +33,22 @@ export function WelcomeHero() {
           }}
         />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="text-center space-y-8">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <div className="space-y-8 text-center">
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h1 className="text-3xl sm:text-3xl lg:text-8xl tracking-tight mb-4">
-                <span className="bg-gradient-to-r from-[#6C63FF] via-[#A78BFA] to-[#00C6AE] bg-clip-text text-transparent">
+              <h1 className="mb-4 text-3xl tracking-tight sm:text-3xl lg:text-7xl">
+                <span className="bg-gradient-to-r from-[var(--primary)] via-[var(--primary-hover)] to-[var(--accent)] bg-clip-text text-transparent">
                   Velan
                 </span>
               </h1>
             </motion.div>
 
             <motion.p
-              className="text-xl sm:text-2xl lg:text-3xl text-[#EAEAEA]/90 max-w-2xl mx-auto"
+              className="mx-auto max-w-2xl text-xl text-foreground/90 sm:text-2xl lg:text-3xl"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -55,9 +56,8 @@ export function WelcomeHero() {
               Cuidar, evoluir, simplificar.
             </motion.p>
 
-            {/* Description */}
             <motion.p
-              className="text-base sm:text-lg text-[#A0A0B0] max-w-xl mx-auto"
+              className="mx-auto max-w-xl text-base text-[color:var(--text-secondary)] sm:text-lg"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
@@ -67,7 +67,7 @@ export function WelcomeHero() {
             </motion.p>
 
             <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8"
+              className="flex flex-col items-center justify-center gap-4 pt-8 sm:flex-row"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
@@ -78,7 +78,7 @@ export function WelcomeHero() {
               >
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-[#6C63FF] to-[#A78BFA] hover:from-[#5B52EE] hover:to-[#967AE9] text-white border-0 shadow-lg shadow-[#6C63FF]/50 px-8 py-6 rounded-2xl"
+                  className="rounded-2xl border-0 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-hover)] px-8 py-6 text-white shadow-lg shadow-[rgba(107,95,209,0.35)] transition-colors hover:from-[var(--primary-hover)] hover:to-[var(--accent)]"
                 >
                   Começar agora
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -92,7 +92,7 @@ export function WelcomeHero() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-2 border-[#00C6AE] text-[#00C6AE] hover:bg-[#00C6AE]/10 bg-transparent px-8 py-6 rounded-2xl"
+                  className="rounded-2xl border-2 border-[color:var(--accent)] bg-transparent px-8 py-6 text-[color:var(--accent)] transition-colors hover:bg-[color:var(--accent)]/12"
                 >
                   <Play className="mr-2 h-5 w-5" />
                   Ver demonstração
@@ -107,7 +107,7 @@ export function WelcomeHero() {
               transition={{ duration: 1, delay: 0.8 }}
             >
               <motion.div
-                className="absolute left-[10%] top-[20%] w-48 h-32 bg-gradient-to-br from-[#6C63FF]/20 to-[#6C63FF]/5 backdrop-blur-xl rounded-2xl border border-[#6C63FF]/30 p-4 shadow-2xl"
+                className="absolute left-[10%] top-[20%] h-32 w-48 rounded-2xl border border-[color:var(--primary)]/30 bg-gradient-to-br from-[color:var(--primary)]/20 to-[color:var(--primary-hover)]/10 p-4 shadow-2xl backdrop-blur-xl"
                 animate={{
                   y: [0, -20, 0],
                   rotate: [-2, 2, -2],
@@ -118,15 +118,15 @@ export function WelcomeHero() {
                   ease: 'easeInOut',
                 }}
               >
-                <div className="w-8 h-8 bg-[#6C63FF] rounded-lg mb-2" />
+                <div className="mb-2 h-8 w-8 rounded-lg bg-[color:var(--primary)]" />
                 <div className="space-y-2">
-                  <div className="w-full h-2 bg-[#EAEAEA]/20 rounded" />
-                  <div className="w-3/4 h-2 bg-[#EAEAEA]/20 rounded" />
+                  <div className="h-2 w-full rounded bg-foreground/10" />
+                  <div className="h-2 w-3/4 rounded bg-foreground/10" />
                 </div>
               </motion.div>
 
               <motion.div
-                className="absolute right-[10%] top-[30%] w-48 h-32 bg-gradient-to-br from-[#00C6AE]/20 to-[#00C6AE]/5 backdrop-blur-xl rounded-2xl border border-[#00C6AE]/30 p-4 shadow-2xl"
+                className="absolute right-[10%] top-[30%] h-32 w-48 rounded-2xl border border-[color:var(--accent)]/30 bg-gradient-to-br from-[color:var(--accent)]/18 to-[color:var(--accent)]/8 p-4 shadow-2xl backdrop-blur-xl"
                 animate={{
                   y: [0, 20, 0],
                   rotate: [2, -2, 2],
@@ -138,15 +138,15 @@ export function WelcomeHero() {
                   delay: 0.5,
                 }}
               >
-                <div className="w-8 h-8 bg-[#00C6AE] rounded-lg mb-2" />
+                <div className="mb-2 h-8 w-8 rounded-lg bg-[color:var(--accent)]" />
                 <div className="space-y-2">
-                  <div className="w-full h-2 bg-[#EAEAEA]/20 rounded" />
-                  <div className="w-2/3 h-2 bg-[#EAEAEA]/20 rounded" />
+                  <div className="h-2 w-full rounded bg-foreground/10" />
+                  <div className="h-2 w-2/3 rounded bg-foreground/10" />
                 </div>
               </motion.div>
 
               <motion.div
-                className="absolute left-1/2 -translate-x-1/2 top-[50%] w-56 h-36 bg-gradient-to-br from-[#F7C948]/20 to-[#F7C948]/5 backdrop-blur-xl rounded-2xl border border-[#F7C948]/30 p-4 shadow-2xl"
+                className="absolute left-1/2 top-[50%] h-36 w-56 -translate-x-1/2 rounded-2xl border border-[color:var(--success)]/30 bg-gradient-to-br from-[color:var(--success)]/18 to-[color:var(--success)]/8 p-4 shadow-2xl backdrop-blur-xl"
                 animate={{
                   y: [0, -15, 0],
                   scale: [1, 1.05, 1],
@@ -158,21 +158,21 @@ export function WelcomeHero() {
                   delay: 1,
                 }}
               >
-                <div className="flex gap-2 mb-3">
-                  <div className="w-6 h-6 bg-[#F7C948] rounded-full" />
-                  <div className="w-6 h-6 bg-[#F7C948]/60 rounded-full" />
+                <div className="mb-3 flex gap-2">
+                  <div className="h-6 w-6 rounded-full bg-[color:var(--success)]" />
+                  <div className="h-6 w-6 rounded-full bg-[color:var(--success)]/60" />
                 </div>
                 <div className="space-y-2">
-                  <div className="w-full h-2 bg-[#EAEAEA]/20 rounded" />
-                  <div className="w-5/6 h-2 bg-[#EAEAEA]/20 rounded" />
-                  <div className="w-4/6 h-2 bg-[#EAEAEA]/20 rounded" />
+                  <div className="h-2 w-full rounded bg-foreground/10" />
+                  <div className="h-2 w-5/6 rounded bg-foreground/10" />
+                  <div className="h-2 w-4/6 rounded bg-foreground/10" />
                 </div>
               </motion.div>
             </motion.div>
           </div>
         </div>
       </div>
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0F0F17] to-transparent" />{' '}
+      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[color:var(--bg)] to-transparent" />
     </section>
   );
 }

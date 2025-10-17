@@ -199,22 +199,22 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
       <Head title="Crie sua conta" />
 
       <div className="mb-8">
-        <h2 className="mb-2 text-2xl text-[#EAEAEA]">Crie sua conta</h2>
-        <p className="text-sm text-[#A0A0B0]">
+        <h2 className="mb-2 text-2xl text-foreground">Crie sua conta</h2>
+        <p className="text-sm text-[color:var(--text-secondary)]">
           Simplifique sua rotina médica e evolua com a Velan.
         </p>
       </div>
 
       <form onSubmit={handleSubmit(handleRegisterSubmit)} className="space-y-5">
         <div className="space-y-2">
-          <Label htmlFor="name" className="text-[#EAEAEA]">
+          <Label htmlFor="name" className="text-foreground">
             Nome completo
           </Label>
           <Input
             type="text"
             autoComplete="name"
             placeholder="Seu nome completo"
-            className="h-12 rounded-xl border-white/10 bg-[#0F0F17]/50 text-[#EAEAEA] placeholder:text-[#A0A0B0]/50 transition-all focus:border-[#00C6AE] focus:ring-2 focus:ring-[#00C6AE]/20"
+            className="h-12 rounded-xl border-[color:var(--border)] bg-[color:var(--surface)]/85 text-foreground placeholder:text-[color:var(--text-secondary)]/70 transition-all focus:border-[color:var(--primary)] focus:ring-2 focus:ring-[color:var(--primary)]/25"
             {...register('name')}
           />
           {errors.name && (
@@ -223,14 +223,14 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email" className="text-[#EAEAEA]">
+          <Label htmlFor="email" className="text-foreground">
             E-mail
           </Label>
           <Input
             type="email"
             autoComplete="email"
             placeholder="seu@email.com"
-            className="h-12 rounded-xl border-white/10 bg-[#0F0F17]/50 text-[#EAEAEA] placeholder:text-[#A0A0B0]/50 transition-all focus:border-[#00C6AE] focus:ring-2 focus:ring-[#00C6AE]/20"
+            className="h-12 rounded-xl border-[color:var(--border)] bg-[color:var(--surface)]/85 text-foreground placeholder:text-[color:var(--text-secondary)]/70 transition-all focus:border-[color:var(--primary)] focus:ring-2 focus:ring-[color:var(--primary)]/25"
             {...register('email')}
           />
           {errors.email && (
@@ -239,7 +239,7 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password" className="text-[#EAEAEA]">
+          <Label htmlFor="password" className="text-foreground">
             Senha
           </Label>
           <div className="relative">
@@ -247,13 +247,13 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
               type={showPassword ? 'text' : 'password'}
               autoComplete="new-password"
               placeholder="Mínimo 8 caracteres"
-              className="h-12 rounded-xl border-white/10 bg-[#0F0F17]/50 pr-12 text-[#EAEAEA] placeholder:text-[#A0A0B0]/50 transition-all focus:border-[#00C6AE] focus:ring-2 focus:ring-[#00C6AE]/20"
+              className="h-12 rounded-xl border-[color:var(--border)] bg-[color:var(--surface)]/85 pr-12 text-foreground placeholder:text-[color:var(--text-secondary)]/70 transition-all focus:border-[color:var(--primary)] focus:ring-2 focus:ring-[color:var(--primary)]/25"
               {...register('password')}
             />
             <button
               type="button"
               onClick={handleTogglePasswordVisibility}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A0A0B0] transition-colors hover:text-[#00C6AE]"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[color:var(--text-secondary)] transition-colors hover:text-[color:var(--accent)]"
             >
               {showPassword ? (
                 <EyeOff className="h-5 w-5" />
@@ -268,7 +268,7 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="confirmPassword" className="text-[#EAEAEA]">
+          <Label htmlFor="confirmPassword" className="text-foreground">
             Confirmar senha
           </Label>
           <div className="relative">
@@ -276,13 +276,13 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
               type={showConfirmPassword ? 'text' : 'password'}
               autoComplete="new-password"
               placeholder="Digite a senha novamente"
-              className="h-12 rounded-xl border-white/10 bg-[#0F0F17]/50 pr-12 text-[#EAEAEA] placeholder:text-[#A0A0B0]/50 transition-all focus:border-[#00C6AE] focus:ring-2 focus:ring-[#00C6AE]/20"
+              className="h-12 rounded-xl border-[color:var(--border)] bg-[color:var(--surface)]/85 pr-12 text-foreground placeholder:text-[color:var(--text-secondary)]/70 transition-all focus:border-[color:var(--primary)] focus:ring-2 focus:ring-[color:var(--primary)]/25"
               {...register('confirmPassword')}
             />
             <button
               type="button"
               onClick={handleToggleConfirmPasswordVisibility}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A0A0B0] transition-colors hover:text-[#00C6AE]"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[color:var(--text-secondary)] transition-colors hover:text-[color:var(--accent)]"
             >
               {showConfirmPassword ? (
                 <EyeOff className="h-5 w-5" />
@@ -306,25 +306,25 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
               <Checkbox
                 checked={value}
                 onCheckedChange={handleTermsChange(onChange)}
-                className="mt-1 border-white/20 data-[state=checked]:border-[#6C63FF] data-[state=checked]:bg-[#6C63FF]"
+                className="mt-1 border-[color:var(--border)] data-[state=checked]:border-[color:var(--primary)] data-[state=checked]:bg-[color:var(--primary)]"
               />
             )}
           />
           <Label
             htmlFor="terms"
-            className="cursor-pointer text-sm leading-relaxed text-[#A0A0B0]"
+            className="cursor-pointer text-sm leading-relaxed text-[color:var(--text-secondary)]"
           >
             Aceito os{' '}
             <a
               href="#"
-              className="text-[#00C6AE] transition-colors hover:text-[#00C6AE]/80"
+              className="text-[color:var(--accent)] transition-colors hover:text-[color:var(--accent)]/80"
             >
               termos de uso
             </a>{' '}
             e{' '}
             <a
               href="#"
-              className="text-[#00C6AE] transition-colors hover:text-[#00C6AE]/80"
+              className="text-[color:var(--accent)] transition-colors hover:text-[color:var(--accent)]/80"
             >
               políticas de privacidade
             </a>
@@ -345,7 +345,7 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
           <Button
             type="submit"
             disabled={isSubmitting || isSuccessVisible}
-            className="relative h-12 w-full overflow-hidden rounded-xl border-0 bg-gradient-to-r from-[#6C63FF] to-[#00C6AE] text-white shadow-lg shadow-[#6C63FF]/30 transition-all hover:from-[#5B52EE] hover:to-[#00B59D] disabled:cursor-not-allowed disabled:opacity-50"
+            className="relative h-12 w-full overflow-hidden rounded-xl border-0 bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white shadow-lg shadow-[rgba(107,95,209,0.28)] transition-all hover:from-[var(--primary-hover)] hover:to-[color:var(--accent)]/90 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isSuccessVisible ? (
               <motion.div
@@ -377,20 +377,20 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
         </motion.div>
 
         <div className="pt-4 text-center">
-          <p className="text-sm text-[#A0A0B0]">
+          <p className="text-sm text-[color:var(--text-secondary)]">
             Já tem uma conta?{' '}
             {onSwitchToLogin ? (
               <button
                 type="button"
                 onClick={onSwitchToLogin}
-                className="text-[#00C6AE] underline-offset-4 transition-colors hover:text-[#00C6AE]/80 hover:underline"
+                className="text-[color:var(--accent)] underline-offset-4 transition-colors hover:text-[color:var(--accent)]/80 hover:underline"
               >
                 Entre agora
               </button>
             ) : (
               <a
                 href={loginRoute()}
-                className="text-[#00C6AE] transition-colors hover:text-[#00C6AE]/80"
+                className="text-[color:var(--accent)] transition-colors hover:text-[color:var(--accent)]/80"
               >
                 Entre agora
               </a>

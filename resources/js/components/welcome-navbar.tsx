@@ -10,7 +10,7 @@ export function WelcomeNavbar() {
   const backgroundColor = useTransform(
     scrollY,
     [0, 100],
-    ['rgba(15, 15, 23, 0)', 'rgba(15, 15, 23, 0.95)']
+    ['rgba(14, 13, 19, 0)', 'rgba(14, 13, 19, 0.92)']
   );
 
   const borderOpacity = useTransform(scrollY, [0, 100], [0, 0.1]);
@@ -28,7 +28,7 @@ export function WelcomeNavbar() {
 
   return (
     <motion.nav
-      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl"
+      className="fixed left-0 right-0 top-0 z-50 backdrop-blur-xl"
       style={{ backgroundColor }}
     >
       <motion.div
@@ -36,24 +36,24 @@ export function WelcomeNavbar() {
         style={{
           borderColor: useTransform(
             borderOpacity,
-            value => `rgba(255, 255, 255, ${value})`
+            value => `rgba(227, 225, 236, ${value})`
           ),
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between sm:h-20">
             <motion.a
               href="/"
-              className="text-2xl sm:text-3xl"
+              className="text-2xl text-foreground sm:text-3xl"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span className="bg-gradient-to-r from-[#6C63FF] to-[#00C6AE] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] bg-clip-text text-transparent">
                 Velan
               </span>
             </motion.a>
 
-            <div className="hidden md:flex items-center gap-8">
+            <div className="hidden items-center gap-8 text-[color:var(--text-secondary)] md:flex">
               {navLinks.map(link => (
                 <a key={link.label} href={link.href}>
                   {link.label}
@@ -61,30 +61,30 @@ export function WelcomeNavbar() {
               ))}
             </div>
 
-            <div className="hidden md:flex items-center gap-4">
+            <div className="hidden items-center gap-4 md:flex">
               <Button
                 asChild
                 variant="ghost"
-                className="text-[#EAEAEA] hover:text-[#00C6AE] hover:bg-white/5"
+                className="text-foreground hover:bg-[color:var(--surface)]/10 hover:text-[color:var(--accent)]"
               >
                 <a href={authLinks.login}>Entrar</a>
               </Button>
 
               <Button
                 asChild
-                className="bg-gradient-to-r from-[#6D63FF] to-[#A78BFA] hover:from-[#5B52EE] hover:to-[#967AE9] text-white border-0 shadow-lg shadow-[#6C63FF]/30"
+                className="border-0 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-hover)] text-white shadow-lg shadow-[rgba(107,95,209,0.25)] transition-colors hover:from-[var(--primary-hover)] hover:to-[var(--accent)]"
               >
                 <a href={authLinks.register}>Começar grátis</a>
               </Button>
             </div>
             <Button
-              className="md:hidden p-2 text-[#EAEAEA] hover:text-[#00C6AE] transition-colors"
+              className="p-2 text-foreground transition-colors hover:text-[color:var(--accent)] md:hidden"
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? (
-                <X className="h-6 w-6 text-black" />
+                <X className="h-6 w-6 text-foreground" />
               ) : (
-                <Menu className="h-6 w-6 text-black" />
+                <Menu className="h-6 w-6 text-foreground" />
               )}
             </Button>
           </div>
@@ -92,33 +92,33 @@ export function WelcomeNavbar() {
 
         {isOpen && (
           <motion.div
-            className="md:hidden border-t border-white/10 bg-[#0F0F17]"
+            className="border-t border-[color:var(--border)] bg-[color:var(--bg)] md:hidden"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
           >
-            <div className="px-4 py-6 space-y-4">
+            <div className="space-y-4 px-4 py-6">
               {navLinks.map(link => (
                 <a
                   key={link.label}
                   href={link.href}
-                  className="block text-[#A0A0B0] hover:text-[#00C6AE] transition-colors py-2"
+                  className="block py-2 text-[color:var(--text-secondary)] transition-colors hover:text-[color:var(--accent)]"
                   onClick={() => setIsOpen(false)}
                 >
                   {link.label}
                 </a>
               ))}
-              <div className="pt-4 space-y-3">
+              <div className="space-y-3 pt-4">
                 <Button
                   asChild
                   variant="outline"
-                  className="w-full border-white/10 text-[#EAEAEA] hover:bg-white/5"
+                  className="w-full border-[color:var(--border)] text-foreground hover:bg-[color:var(--surface)]/10"
                 >
                   <a href={authLinks.login}>Entrar</a>
                 </Button>
                 <Button
                   asChild
-                  className="w-full bg-gradient-to-r from-[#6C63FF] to-[#A78BFA] text-white border-0"
+                  className="w-full border-0 bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white shadow-[0_12px_24px_rgba(107,95,209,0.2)]"
                 >
                   <a href={authLinks.register}>Começar grátis</a>
                 </Button>

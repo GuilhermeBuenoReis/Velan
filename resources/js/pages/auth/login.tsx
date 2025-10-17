@@ -130,22 +130,22 @@ export function Login({
       )}
 
       <div className="mb-8">
-        <h2 className="mb-2 text-2xl text-[#EAEAEA]">Bem-vindo de volta</h2>
-        <p className="text-sm text-[#A0A0B0]">
+        <h2 className="mb-2 text-2xl text-foreground">Bem-vindo de volta</h2>
+        <p className="text-sm text-[color:var(--text-secondary)]">
           Entre para continuar cuidando da sua saúde.
         </p>
       </div>
 
       <form onSubmit={handleSubmit(handleLoginSubmit)} className="space-y-6">
         <div className="space-y-3">
-          <Label htmlFor="email" className="block text-[#EAEAEA]">
+          <Label htmlFor="email" className="block text-foreground">
             E-mail
           </Label>
           <Input
             type="email"
             placeholder="seu@email.com"
             autoComplete="email"
-            className="h-12 rounded-sm border-white/10 bg-[#0F0F17]/50 text-[#EAEAEA] placeholder:text-[#A0A0B0]/50 transition-all focus:border-[#00C6AE] focus:ring-2 focus:ring-[#00C6AE]/20"
+            className="h-12 rounded-sm border-[color:var(--border)] bg-[color:var(--surface)]/85 text-foreground placeholder:text-[color:var(--text-secondary)]/70 transition-all focus:border-[color:var(--primary)] focus:ring-2 focus:ring-[color:var(--primary)]/25"
             {...register('email')}
           />
           {errors.email && (
@@ -154,7 +154,7 @@ export function Login({
         </div>
 
         <div className="space-y-3">
-          <Label htmlFor="password" className="block text-[#EAEAEA]">
+          <Label htmlFor="password" className="block text-foreground">
             Senha
           </Label>
           <div className="relative">
@@ -162,13 +162,13 @@ export function Login({
               type={showPassword ? 'text' : 'password'}
               placeholder="••••••••"
               autoComplete="current-password"
-              className="h-12 rounded-sm border-white/10 bg-[#0F0F17]/50 pr-12 text-[#EAEAEA] placeholder:text-[#A0A0B0]/50 transition-all focus:border-[#00C6AE] focus:ring-2 focus:ring-[#00C6AE]/20"
+              className="h-12 rounded-sm border-[color:var(--border)] bg-[color:var(--surface)]/85 pr-12 text-foreground placeholder:text-[color:var(--text-secondary)]/70 transition-all focus:border-[color:var(--primary)] focus:ring-2 focus:ring-[color:var(--primary)]/25"
               {...register('password')}
             />
             <button
               type="button"
               onClick={handleTogglePasswordVisibility}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A0A0B0] transition-colors hover:text-[#00C6AE]"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[color:var(--text-secondary)] transition-colors hover:text-[color:var(--accent)]"
               aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
             >
               {showPassword ? (
@@ -192,13 +192,13 @@ export function Login({
                 <Checkbox
                   checked={value}
                   onCheckedChange={handleRememberChange(onChange)}
-                  className="border-white/20 data-[state=checked]:border-[#6C63FF] data-[state=checked]:bg-[#6C63FF]"
+                  className="border-[color:var(--border)] data-[state=checked]:border-[color:var(--primary)] data-[state=checked]:bg-[color:var(--primary)]"
                 />
               )}
             />
             <Label
               htmlFor="lembrar"
-              className="cursor-pointer text-sm text-[#A0A0B0]"
+              className="cursor-pointer text-sm text-[color:var(--text-secondary)]"
             >
               Lembrar de mim
             </Label>
@@ -207,7 +207,7 @@ export function Login({
           {canResetPassword && (
             <a
               href={requestPassword.url()}
-              className="text-sm text-[#00C6AE] transition-colors hover:text-[#00C6AE]/80"
+              className="text-sm text-[color:var(--accent)] transition-colors hover:text-[color:var(--accent)]/80"
             >
               Esqueci minha senha
             </a>
@@ -224,7 +224,7 @@ export function Login({
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="h-12 w-full rounded-xl border-0 bg-gradient-to-r from-[#6C63FF] to-[#00C6AE] text-white shadow-lg shadow-[#6C63FF]/30 transition-all hover:from-[#5B52EE] hover:to-[#00B59D]"
+            className="h-12 w-full rounded-xl border-0 bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white shadow-lg shadow-[rgba(107,95,209,0.28)] transition-all hover:from-[var(--primary-hover)] hover:to-[color:var(--accent)]/90"
           >
             {isSubmitting && (
               <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
@@ -235,10 +235,10 @@ export function Login({
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-white/10" />
+            <div className="w-full border-t border-sidebar-border/70" />
           </div>
-          <div className="relative flex justify-center items-center text-sm">
-            <span className="bg-gradient-to-r from-[#1A152A]/80 to-[#0F0F17]/80 px-4 text-[#A0A0B0] rounded-2xl">
+          <div className="relative flex items-center justify-center text-sm">
+            <span className="rounded-2xl bg-gradient-to-r from-[color:var(--surface-muted)]/90 to-[color:var(--surface)]/90 px-4 text-[color:var(--text-secondary)]">
               ou
             </span>
           </div>
@@ -248,7 +248,7 @@ export function Login({
           <Button
             type="button"
             variant="outline"
-            className="h-12 w-full rounded-xl border-2 border-white/10 bg-transparent text-[#EAEAEA] transition-all hover:border-[#00C6AE]/50 hover:bg-white/5"
+            className="h-12 w-full rounded-xl border-2 border-[color:var(--border)] bg-[color:var(--surface)] text-foreground transition-all hover:border-[color:var(--accent)]/60 hover:bg-[color:var(--accent)]/10"
           >
             <svg
               className="mr-2 h-5 w-5"
@@ -277,20 +277,20 @@ export function Login({
         </motion.div>
 
         <div className="pt-4 text-center">
-          <p className="text-sm text-[#A0A0B0]">
+          <p className="text-sm text-[color:var(--text-secondary)]">
             Não tem uma conta?{' '}
             {onSwitchToRegister ? (
               <button
                 type="button"
                 onClick={onSwitchToRegister}
-                className="text-[#00C6AE] underline-offset-4 transition-colors hover:text-[#00C6AE]/80 hover:underline"
+                className="text-[color:var(--accent)] underline-offset-4 transition-colors hover:text-[color:var(--accent)]/80 hover:underline"
               >
                 Crie agora
               </button>
             ) : (
               <a
                 href={registerRoute.url()}
-                className="text-[#00C6AE] transition-colors hover:text-[#00C6AE]/80"
+                className="text-[color:var(--accent)] transition-colors hover:text-[color:var(--accent)]/80"
               >
                 Crie agora
               </a>

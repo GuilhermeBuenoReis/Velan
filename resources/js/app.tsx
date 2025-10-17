@@ -5,7 +5,7 @@ import type { ComponentType } from 'react';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'Velan';
 type PageModule = Record<string, ComponentType<any>> & {
   default?: ComponentType<any>;
 };
@@ -43,7 +43,7 @@ createInertiaApp({
     root.render(<App {...props} />);
   },
   progress: {
-    color: '#4B5563',
+    color: '#6B5FD1',
   },
 });
 

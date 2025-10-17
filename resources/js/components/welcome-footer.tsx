@@ -6,7 +6,7 @@ const socialLinks = [
   { label: 'twitter', href: '/social/twitter' },
   { label: 'linkedin', href: '/social/linkedin' },
   { label: 'instagram', href: '/social/instagram' },
-];
+] as const;
 
 const productLinks = [
   { label: 'Recursos', href: '/features' },
@@ -14,7 +14,7 @@ const productLinks = [
   { label: 'Segurança', href: '/security' },
   { label: 'Atualizações', href: '/updates' },
   { label: 'Roadmap', href: '/roadmap' },
-];
+] as const;
 
 const companyLinks = [
   { label: 'Sobre', href: '/about' },
@@ -22,45 +22,45 @@ const companyLinks = [
   { label: 'Carreiras', href: '/careers' },
   { label: 'Imprensa', href: '/press' },
   { label: 'Parceiros', href: '/partners' },
-];
+] as const;
 
 const legalLinks = [
   { label: 'Política de privacidade', href: '/privacy-policy' },
   { label: 'Termos de uso', href: '/terms-of-use' },
   { label: 'Cookies', href: '/cookies' },
-];
+] as const;
 
 export function WelcomeFooter() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-gradient-to-b from-[#0F0F17] to-[#1A152A] border-t border-white/5">
-      <div className="relative py-20 sm:py-24 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-[#6C63FF]/20 via-[#00C6AE]/10 to-transparent blur-3xl" />
+    <footer className="relative border-t border-sidebar-border bg-gradient-to-b from-[color:var(--surface)] to-[color:var(--surface-muted)]">
+      <div className="relative overflow-hidden py-20 sm:py-24">
+        <div className="absolute left-1/2 top-0 h-[300px] w-[600px] -translate-x-1/2 rounded-full bg-velan-gradient-light opacity-40 blur-3xl" />
 
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-4xl sm:text-5xl mb-6">
-              <span className="bg-gradient-to-r from-[#6C63FF] via-[#A78BFA] to-[#00C6AE] bg-clip-text text-transparent">
+            <h2 className="mb-6 text-4xl sm:text-5xl">
+              <span className="bg-gradient-to-r from-[var(--primary)] via-[var(--primary-hover)] to-[var(--accent)] bg-clip-text text-transparent">
                 Pronto para transformar sua saúde?
               </span>
             </h2>
-            <p className="text-[#A0A0B0] mb-8 max-w-2xl mx-auto">
+            <p className="mx-auto mb-8 max-w-2xl text-[color:var(--text-secondary)]">
               Junte-se a milhares de profissionais e pacientes que já confiam na
               Velan para gerenciar sua saúde de forma inteligente.
             </p>
             <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center"
+              className="flex flex-col items-center justify-center gap-4 sm:flex-row"
               whileHover={{ scale: 1.02 }}
             >
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-[#6C63FF] to-[#A78BFA] hover:from-[#5B52EE] hover:to-[#967AE9] text-white border-0 shadow-lg shadow-[#6C63FF]/50 px-8 py-6 rounded-2xl"
+                className="rounded-2xl border-0 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-hover)] px-8 py-6 text-white shadow-lg shadow-[rgba(107,95,209,0.3)] transition-colors hover:from-[var(--primary-hover)] hover:to-[var(--accent)]"
               >
                 Começar gratuitamente
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -70,16 +70,16 @@ export function WelcomeFooter() {
         </div>
       </div>
 
-      <div className="border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+      <div className="border-t border-sidebar-border/70">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
             <div className="lg:col-span-1">
-              <h3 className="text-3xl mb-4">
-                <span className="bg-gradient-to-r from-[#6C63FF] to-[#00C6AE] bg-clip-text text-transparent">
+              <h3 className="mb-4 text-3xl font-semibold">
+                <span className="bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] bg-clip-text text-transparent">
                   Velan
                 </span>
               </h3>
-              <p className="text-[#A0A0B0] text-sm mb-4">
+              <p className="mb-4 text-sm text-[color:var(--text-secondary)]">
                 A próxima geração em gestão de saúde. Tecnologia que cuida de
                 você.
               </p>
@@ -88,22 +88,24 @@ export function WelcomeFooter() {
                   <a
                     key={label}
                     href={href}
-                    className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center border border-white/10 hover:border-[#6C63FF]/50 transition-all duration-300"
+                    className="flex h-10 w-10 items-center justify-center rounded-lg border border-sidebar-border/70 bg-[color:var(--surface)] transition-all duration-300 hover:border-[color:var(--accent)]/70 hover:bg-[color:var(--accent)]/10"
                   >
-                    <div className="w-5 h-5 bg-gradient-to-r from-[#6C63FF] to-[#00C6AE] rounded-sm" />
+                    <div className="h-5 w-5 rounded-sm bg-gradient-to-r from-[var(--primary)] to-[var(--accent)]" />
                   </a>
                 ))}
               </div>
             </div>
 
             <div>
-              <h4 className="text-[#EAEAEA] mb-4">Produto</h4>
+              <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide text-[color:var(--text-secondary)]">
+                Produto
+              </h4>
               <ul className="space-y-3">
                 {productLinks.map(({ label, href }) => (
                   <li key={label}>
                     <a
                       href={href}
-                      className="text-sm text-[#A0A0B0] hover:text-[#00C6AE] transition-colors duration-300"
+                      className="text-sm text-[color:var(--text-secondary)] transition-colors duration-300 hover:text-[color:var(--accent)]"
                     >
                       {label}
                     </a>
@@ -113,13 +115,15 @@ export function WelcomeFooter() {
             </div>
 
             <div>
-              <h4 className="text-[#EAEAEA] mb-4">Empresa</h4>
+              <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide text-[color:var(--text-secondary)]">
+                Empresa
+              </h4>
               <ul className="space-y-3">
                 {companyLinks.map(({ label, href }) => (
                   <li key={label}>
                     <a
                       href={href}
-                      className="text-sm text-[#A0A0B0] hover:text-[#00C6AE] transition-colors duration-300"
+                      className="text-sm text-[color:var(--text-secondary)] transition-colors duration-300 hover:text-[color:var(--accent)]"
                     >
                       {label}
                     </a>
@@ -129,23 +133,25 @@ export function WelcomeFooter() {
             </div>
 
             <div>
-              <h4 className="text-[#EAEAEA] mb-4">Contato</h4>
+              <h4 className="mb-4 text-sm font-semibold uppercase tracking-wide text-[color:var(--text-secondary)]">
+                Contato
+              </h4>
               <ul className="space-y-3">
-                <li className="flex items-start gap-2 text-sm text-[#A0A0B0]">
-                  <Mail className="h-4 w-4 mt-0.5 text-[#6C63FF]" />
+                <li className="flex items-start gap-2 text-sm text-[color:var(--text-secondary)]">
+                  <Mail className="mt-0.5 h-4 w-4 text-[color:var(--primary)]" />
                   <a
                     href="mailto:contato@velan.com"
-                    className="hover:text-[#00C6AE] transition-colors"
+                    className="transition-colors hover:text-[color:var(--accent)]"
                   >
                     contato@velan.com
                   </a>
                 </li>
-                <li className="flex items-start gap-2 text-sm text-[#A0A0B0]">
-                  <Phone className="h-4 w-4 mt-0.5 text-[#6C63FF]" />
+                <li className="flex items-start gap-2 text-sm text-[color:var(--text-secondary)]">
+                  <Phone className="mt-0.5 h-4 w-4 text-[color:var(--primary)]" />
                   <span>+55 11 9999-9999</span>
                 </li>
-                <li className="flex items-start gap-2 text-sm text-[#A0A0B0]">
-                  <MapPin className="h-4 w-4 mt-0.5 text-[#6C63FF]" />
+                <li className="flex items-start gap-2 text-sm text-[color:var(--text-secondary)]">
+                  <MapPin className="mt-0.5 h-4 w-4 text-[color:var(--primary)]" />
                   <span>São Paulo, SP - Brasil</span>
                 </li>
               </ul>
@@ -154,28 +160,24 @@ export function WelcomeFooter() {
         </div>
       </div>
 
-      <div className="border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-[#A0A0B0]">
-              © {currentYear} Velan. Todos os direitos reservados.
-            </p>
-            <div className="flex flex-wrap gap-6">
-              {legalLinks.map(({ label, href }) => (
-                <a
-                  key={label}
-                  href={href}
-                  className="text-sm text-[#A0A0B0] hover:text-[#00C6AE] transition-colors duration-300"
-                >
-                  {label}
-                </a>
-              ))}
-            </div>
+      <div className="border-t border-sidebar-border/70">
+        <div className="mx-auto flex flex-col items-center justify-between gap-4 px-4 py-6 text-sm text-[color:var(--text-secondary)] sm:flex-row sm:px-6 lg:px-8">
+          <p>© {currentYear} Velan. Todos os direitos reservados.</p>
+          <div className="flex flex-wrap gap-6">
+            {legalLinks.map(({ label, href }) => (
+              <a
+                key={label}
+                href={href}
+                className="transition-colors duration-300 hover:text-[color:var(--accent)]"
+              >
+                {label}
+              </a>
+            ))}
           </div>
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#6C63FF]/50 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--primary)]/40 to-transparent" />
     </footer>
   );
 }

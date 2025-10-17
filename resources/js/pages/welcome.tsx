@@ -9,7 +9,7 @@ import { WelcomeTestimonials } from '@/components/welcome-testimonials';
 
 export function Welcome() {
   return (
-    <div className="min-h-screen bg-[#0F0F17] text-[#EAEAEA]">
+    <div className="min-h-screen bg-[color:var(--bg)] text-foreground">
       <WelcomeNavbar />
       <WelcomeHero />
       <WelcomeHowItWorks />

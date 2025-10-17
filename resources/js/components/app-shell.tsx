@@ -17,7 +17,7 @@ export function AppShell({ children, variant = 'header' }: AppShellProps) {
   return (
     <SidebarProvider
       defaultOpen={isOpen}
-      className="flex min-h-screen w-full bg-[#0F0F17]"
+      className="flex min-h-screen w-full bg-[color:var(--bg)]"
     >
       {children}
     </SidebarProvider>

@@ -6,27 +6,36 @@ const stats = [
     id: createRandomId(),
     label: 'Consultas hoje',
     value: '12',
-    color: '#6C63FF',
+    tone: {
+      base: 'rgba(107,95,209,1)',
+      soft: 'rgba(107,95,209,0.16)',
+    },
   },
   {
     id: createRandomId(),
     label: 'Pacientes ativos',
     value: '248',
-    color: '#00C6AE',
+    tone: {
+      base: 'rgba(76,163,176,1)',
+      soft: 'rgba(76,163,176,0.16)',
+    },
   },
   {
     id: createRandomId(),
     label: 'Taxa de satisfação',
     value: '98%',
-    color: '#F7C948',
+    tone: {
+      base: 'rgba(89,193,120,1)',
+      soft: 'rgba(89,193,120,0.18)',
+    },
   },
-];
+] as const;
 
 const scheduleItems = [
   { id: createRandomId(), time: '13:00' },
   { id: createRandomId(), time: '12:00' },
   { id: createRandomId(), time: '11:00' },
-];
+] as const;
 
 const chartData = [
   { id: createRandomId(), height: 40 },
@@ -36,85 +45,92 @@ const chartData = [
   { id: createRandomId(), height: 60 },
   { id: createRandomId(), height: 90 },
   { id: createRandomId(), height: 75 },
-];
+] as const;
 
 export function WelcomeSystemDemo() {
   return (
-    <section className="relative py-24 sm:py-32 bg-gradient-to-b from-[#0F0F17] via-[#1A152A] to-[#0F0F17]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative bg-gradient-to-b from-[color:var(--bg)] via-[color:var(--surface-muted)] to-[color:var(--bg)] py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
-          className="text-center mb-16"
+          className="mb-16 text-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl sm:text-5xl mb-4">
-            <span className="bg-gradient-to-r from-[#00C6AE] to-[#6C63FF] bg-clip-text text-transparent">
+          <h2 className="mb-4 text-4xl sm:text-5xl">
+            <span className="bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] bg-clip-text text-transparent">
               Tecnologia que funciona
             </span>
           </h2>
-          <p className="text-[#A0A0B0] max-w-2xl mx-auto">
+          <p className="mx-auto max-w-2xl text-[color:var(--text-secondary)]">
             Interface intuitiva e moderna, desenhada para profissionais que
             valorizam eficiência
           </p>
         </motion.div>
 
         <motion.div
-          className="relative max-w-5xl mx-auto"
+          className="relative mx-auto max-w-5xl"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <div className="absolute -inset-4 bg-gradient-to-r from-[#6C63FF]/20 via-[#00C6AE]/20 to-[#F7C948]/20 rounded-3xl blur-3xl" />
+          <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-[var(--primary)]/20 via-[var(--accent)]/20 to-[var(--success)]/20 blur-3xl" />
 
-          <div className="relative bg-[#0F0F17] rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
-            <div className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-[#1A152A] to-[#2A2535] border-b border-white/5">
+          <div className="relative overflow-hidden rounded-3xl border border-sidebar-border bg-[color:var(--surface)] shadow-[0_30px_80px_rgba(14,13,19,0.35)]">
+            <div className="flex items-center gap-2 border-b border-sidebar-border/70 bg-gradient-to-r from-[color:var(--surface-muted)] to-[color:var(--surface)] px-4 py-3">
               <div className="flex gap-2">
-                <div className="w-3 h-3 rounded-full bg-[#FF6B6B]" />
-                <div className="w-3 h-3 rounded-full bg-[#F7C948]" />
-                <div className="w-3 h-3 rounded-full bg-[#00C6AE]" />
+                <div className="h-3 w-3 rounded-full bg-[color:var(--destructive)]/80" />
+                <div className="h-3 w-3 rounded-full bg-[color:var(--accent)]/80" />
+                <div className="h-3 w-3 rounded-full bg-[color:var(--success)]/80" />
               </div>
-              <div className="flex-1 text-center text-sm text-[#A0A0B0]">
+              <div className="flex-1 text-center text-sm text-[color:var(--text-secondary)]">
                 Dashboard - Velan
               </div>
             </div>
 
-            <div className="p-8 space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="space-y-6 p-8">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 {stats.map((stat, index) => (
                   <motion.div
                     key={stat.id}
-                    className="bg-gradient-to-br from-[#1A152A] to-[#2A2535] rounded-xl p-4 border border-white/5"
+                    className="rounded-xl border border-sidebar-border/60 bg-gradient-to-br from-[color:var(--surface-muted)]/80 to-[color:var(--surface)] p-4"
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.2 + index * 0.1 }}
                   >
-                    <p className="text-[#A0A0B0] text-sm mb-1">{stat.label}</p>
-                    <p className="text-3xl" style={{ color: stat.color }}>
+                    <p className="mb-1 text-sm text-[color:var(--text-secondary)]">
+                      {stat.label}
+                    </p>
+                    <p
+                      className="text-3xl font-semibold"
+                      style={{ color: stat.tone.base }}
+                    >
                       {stat.value}
                     </p>
                   </motion.div>
                 ))}
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-gradient-to-br from-[#1A152A] to-[#2A2535] rounded-xl p-6 border border-white/5">
-                  <h3 className="text-[#EAEAEA] mb-4">Próximas consultas</h3>
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div className="rounded-xl border border-sidebar-border/60 bg-gradient-to-br from-[color:var(--surface-muted)]/80 to-[color:var(--surface)] p-6">
+                  <h3 className="mb-4 text-lg font-semibold text-foreground">
+                    Próximas consultas
+                  </h3>
                   <div className="space-y-3">
                     {scheduleItems.map(item => (
                       <div
                         key={item.id}
-                        className="flex items-center gap-3 p-3 bg-[#0F0F17]/50 rounded-lg border border-white/5"
+                        className="flex items-center gap-3 rounded-lg border border-sidebar-border/80 bg-[color:var(--surface)]/80 p-3"
                       >
-                        <div className="w-10 h-10 bg-gradient-to-br from-[#6C63FF] to-[#A78BFA] rounded-lg" />
+                        <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)]" />
                         <div className="flex-1">
-                          <div className="h-3 bg-[#EAEAEA]/20 rounded w-32 mb-1" />
-                          <div className="h-2 bg-[#EAEAEA]/10 rounded w-24" />
+                          <div className="mb-1 h-3 w-32 rounded bg-foreground/10" />
+                          <div className="h-2 w-24 rounded bg-foreground/10" />
                         </div>
-                        <div className="text-xs text-[#00C6AE]">
+                        <div className="text-xs font-medium text-[color:var(--accent)]">
                           {item.time}
                         </div>
                       </div>
@@ -122,13 +138,15 @@ export function WelcomeSystemDemo() {
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-[#1A152A] to-[#2A2535] rounded-xl p-6 border border-white/5">
-                  <h3 className="text-[#EAEAEA] mb-4">Visão geral</h3>
-                  <div className="h-48 flex items-end justify-between gap-2">
+                <div className="rounded-xl border border-sidebar-border/60 bg-gradient-to-br from-[color:var(--surface-muted)]/80 to-[color:var(--surface)] p-6">
+                  <h3 className="mb-4 text-lg font-semibold text-foreground">
+                    Visão geral
+                  </h3>
+                  <div className="flex h-48 items-end justify-between gap-2">
                     {chartData.map((bar, index) => (
                       <motion.div
                         key={bar.id}
-                        className="flex-1 bg-gradient-to-t from-[#6C63FF] to-[#00C6AE] rounded-t-lg"
+                        className="flex-1 rounded-t-lg bg-gradient-to-t from-[var(--primary)] to-[var(--accent)]"
                         initial={{ height: 0 }}
                         whileInView={{ height: `${bar.height}%` }}
                         viewport={{ once: true }}
@@ -142,19 +160,19 @@ export function WelcomeSystemDemo() {
               <div className="flex flex-wrap gap-3">
                 <button
                   type="button"
-                  className="px-4 py-2 bg-gradient-to-r from-[#6C63FF] to-[#A78BFA] rounded-lg text-sm text-white"
+                  className="rounded-lg bg-gradient-to-r from-[var(--primary)] to-[var(--primary-hover)] px-4 py-2 text-sm font-medium text-white shadow-[0_10px_24px_rgba(107,95,209,0.35)] transition-transform hover:scale-[1.02]"
                 >
                   Nova consulta
                 </button>
                 <button
                   type="button"
-                  className="px-4 py-2 bg-[#1A152A] border border-[#00C6AE]/30 rounded-lg text-sm text-[#00C6AE]"
+                  className="rounded-lg border border-[color:var(--accent)]/60 bg-[color:var(--surface)] px-4 py-2 text-sm font-medium text-[color:var(--accent)] transition-colors hover:bg-[color:var(--accent)]/12"
                 >
                   Relatórios
                 </button>
                 <button
                   type="button"
-                  className="px-4 py-2 bg-[#1A152A] border border-white/10 rounded-lg text-sm text-[#EAEAEA]"
+                  className="rounded-lg border border-sidebar-border/70 bg-[color:var(--surface)] px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-[color:var(--surface-muted)]/60"
                 >
                   Configurações
                 </button>
@@ -162,7 +180,7 @@ export function WelcomeSystemDemo() {
             </div>
           </div>
 
-          <div className="absolute -bottom-20 left-0 right-0 h-32 bg-gradient-to-b from-[#6C63FF]/5 to-transparent blur-2xl" />
+          <div className="absolute -bottom-20 left-0 right-0 h-32 bg-gradient-to-b from-[var(--primary)]/10 to-transparent blur-2xl" />
         </motion.div>
       </div>
     </section>
