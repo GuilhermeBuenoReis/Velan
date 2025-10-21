@@ -49,7 +49,9 @@ function commitToHistory(key: string, value: unknown, fallback: unknown) {
 }
 
 export function useUrlState<T>(key: string, fallback: T) {
-  const [state, setState] = useState<T>(() => getInitialValue<T>(key, fallback));
+  const [state, setState] = useState<T>(() =>
+    getInitialValue<T>(key, fallback)
+  );
 
   useEffect(() => {
     setState(getInitialValue<T>(key, fallback));
@@ -75,7 +77,9 @@ export function useUrlState<T>(key: string, fallback: T) {
     (value: Updater<T>) => {
       setState(previous => {
         const resolved =
-          typeof value === 'function' ? (value as (prevState: T) => T)(previous) : value;
+          typeof value === 'function'
+            ? (value as (prevState: T) => T)(previous)
+            : value;
 
         commitToHistory(key, resolved, fallback);
 

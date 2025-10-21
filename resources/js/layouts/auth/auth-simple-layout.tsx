@@ -21,7 +21,7 @@ export function AuthSimpleLayout({
   description,
 }: PropsWithChildren<AuthLayoutProps>) {
   return (
-    <div className="flex min-h-screen bg-[color:var(--bg)]">
+    <div className="flex min-h-[100dvh] overflow-hidden bg-[color:var(--bg)]">
       <div className="relative hidden overflow-hidden lg:flex lg:w-1/2 xl:w-3/5">
         <div className="absolute inset-0 bg-gradient-to-br from-[color:var(--surface)] via-[color:var(--bg)] to-[color:var(--accent)]/24" />
         <motion.div
@@ -117,17 +117,17 @@ export function AuthSimpleLayout({
         </div>
         <div className="absolute bottom-0 left-0 h-[500px] w-[500px] rounded-full bg-[color:var(--accent)]/24 blur-[150px]" />
       </div>
-      <div className="relative flex flex-1 items-center justify-center p-8">
+      <div className="relative flex flex-1 items-center justify-center overflow-y-auto px-6 py-10 sm:px-10 sm:py-16 lg:overflow-visible lg:px-16 lg:py-20">
         <div className="absolute inset-0 bg-gradient-to-tr from-[var(--primary)]/10 to-transparent" />
         <motion.div
-          className="relative z-10 w-full max-w-[420px]"
+          className="relative z-10 w-full max-w-[460px]"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
           <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-br from-[var(--accent)]/20 via-[var(--primary)]/20 to-transparent blur-sm" />
-          <div className="relative rounded-2xl border border-sidebar-border/80 bg-gradient-to-br from-[color:var(--surface)]/85 to-[color:var(--surface-muted)]/85 p-8 shadow-2xl backdrop-blur-xl">
-            <div className="mb-6">
+          <div className="relative rounded-2xl border border-sidebar-border/80 bg-gradient-to-br from-[color:var(--surface)]/85 to-[color:var(--surface-muted)]/85 px-8 py-10 shadow-2xl backdrop-blur-xl sm:px-10 sm:py-12">
+            <div className="mb-8">
               <h1 className="mb-2 text-3xl">
                 <span className="bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] bg-clip-text text-transparent">
                   Velan
@@ -139,7 +139,7 @@ export function AuthSimpleLayout({
             </div>
             {title && <h2 className="mb-2 text-xl text-foreground">{title}</h2>}
             {description && (
-              <p className="mb-6 text-sm text-[color:var(--text-secondary)]">
+              <p className="mb-8 text-sm text-[color:var(--text-secondary)]">
                 {description}
               </p>
             )}

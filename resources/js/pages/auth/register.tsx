@@ -9,6 +9,13 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useUrlState } from '@/hooks/use-url-state';
 import { AuthLayout } from '@/layouts/auth-layout';
 import { login as loginRoute } from '@/routes';
@@ -27,6 +34,14 @@ const registerSchema = z
       .string({ required_error: 'Informe seu e-mail.' })
       .min(1, 'Informe seu e-mail.')
       .email('Digite um e-mail válido.'),
+    phone: z
+      .string({ required_error: 'Informe seu telefone.' })
+      .min(1, 'Informe seu telefone.')
+      .max(20, 'O telefone deve ter no máximo 20 caracteres.'),
+    role: z.enum(['patient', 'doctor', 'clinic'], {
+      required_error: 'Selecione o perfil de uso.',
+      invalid_type_error: 'Selecione o perfil de uso.',
+    }),
     password: z
       .string({ required_error: 'Informe uma senha.' })
       .min(8, 'A senha deve ter pelo menos 8 caracteres.'),
@@ -59,6 +74,8 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
     'register_success',
     false
   );
+  const handleLoginRedirect =
+    onSwitchToLogin ?? (() => router.visit(loginRoute()));
 
   const successTimeoutRef = useRef<number | null>(null);
 
@@ -75,6 +92,8 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
     defaultValues: {
       name: '',
       email: '',
+      phone: '',
+      role: 'patient',
       password: '',
       confirmPassword: '',
       acceptTerms: false,
@@ -122,6 +141,8 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
     const registerFields: Array<keyof RegisterFormData> = [
       'name',
       'email',
+      'phone',
+      'role',
       'password',
       'confirmPassword',
       'acceptTerms',
@@ -141,6 +162,8 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
         {
           name: data.name,
           email: data.email,
+          phone: data.phone,
+          role: data.role,
           password: data.password,
           password_confirmation: data.confirmPassword,
           terms: data.acceptTerms ? 'on' : '',
@@ -179,6 +202,8 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
               {
                 name: '',
                 email: '',
+                phone: '',
+                role: 'patient',
                 password: '',
                 confirmPassword: '',
                 acceptTerms: false,
@@ -206,7 +231,7 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
       </div>
 
       <form onSubmit={handleSubmit(handleRegisterSubmit)} className="space-y-5">
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label htmlFor="name" className="text-foreground">
             Nome completo
           </Label>
@@ -222,7 +247,7 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
           )}
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label htmlFor="email" className="text-foreground">
             E-mail
           </Label>
@@ -238,7 +263,48 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
           )}
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
+          <Label htmlFor="phone" className="text-foreground">
+            Telefone
+          </Label>
+          <Input
+            type="tel"
+            autoComplete="tel"
+            placeholder="(00) 00000-0000"
+            className="h-12 rounded-xl border-[color:var(--border)] bg-[color:var(--surface)]/85 text-foreground placeholder:text-[color:var(--text-secondary)]/70 transition-all focus:border-[color:var(--primary)] focus:ring-2 focus:ring-[color:var(--primary)]/25"
+            {...register('phone')}
+          />
+          {errors.phone && (
+            <p className="text-xs text-red-400">{errors.phone.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-3">
+          <Label htmlFor="role" className="text-foreground">
+            Perfil de uso
+          </Label>
+          <Controller
+            name="role"
+            control={control}
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="h-12 rounded-xl border-[color:var(--border)] bg-[color:var(--surface)]/85 text-left text-foreground transition-all focus:border-[color:var(--primary)] focus:ring-2 focus:ring-[color:var(--primary)]/25">
+                  <SelectValue placeholder="Selecione uma opção" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="patient">Paciente</SelectItem>
+                  <SelectItem value="doctor">Médico</SelectItem>
+                  <SelectItem value="clinic">Clínica</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
+          {errors.role && (
+            <p className="text-xs text-red-400">{errors.role.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-3">
           <Label htmlFor="password" className="text-foreground">
             Senha
           </Label>
@@ -267,7 +333,7 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
           )}
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label htmlFor="confirmPassword" className="text-foreground">
             Confirmar senha
           </Label>
@@ -379,22 +445,13 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
         <div className="pt-4 text-center">
           <p className="text-sm text-[color:var(--text-secondary)]">
             Já tem uma conta?{' '}
-            {onSwitchToLogin ? (
-              <button
-                type="button"
-                onClick={onSwitchToLogin}
-                className="text-[color:var(--accent)] underline-offset-4 transition-colors hover:text-[color:var(--accent)]/80 hover:underline"
-              >
-                Entre agora
-              </button>
-            ) : (
-              <a
-                href={loginRoute()}
-                className="text-[color:var(--accent)] transition-colors hover:text-[color:var(--accent)]/80"
-              >
-                Entre agora
-              </a>
-            )}
+            <button
+              type="button"
+              onClick={handleLoginRedirect}
+              className="text-[color:var(--accent)] underline-offset-4 transition-colors hover:text-[color:var(--accent)]/80 hover:underline"
+            >
+              Entre agora
+            </button>
           </p>
         </div>
       </form>
