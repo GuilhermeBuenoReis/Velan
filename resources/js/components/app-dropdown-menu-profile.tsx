@@ -52,9 +52,9 @@ export function AppDropdownMenuProfile() {
         <Button
           variant="ghost"
           size="icon"
-          className="relative h-14 w-14 rounded-[16px] border border-[color:var(--accent)]/40 bg-transparent p-0 transition-all duration-300 hover:border-[color:var(--accent)]/70 hover:shadow-[0_0_12px_rgba(76,163,176,0.3)]"
+          className="relative h-14 w-14 rounded-full border border-[color:var(--accent)]/40 bg-transparent p-0 transition-all duration-300 hover:border-[color:var(--accent)]/70 hover:shadow-[0_0_12px_rgba(76,163,176,0.3)]"
         >
-          <Avatar className="size-14 !rounded-[16px]">
+          <Avatar className="size-14 !rounded-full">
             {user.avatar && <AvatarImage src={user.avatar} alt={user.name} />}
             <AvatarFallback className="!rounded-[inherit] bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] text-sm font-medium text-white">
               {getInitials(user.name)}

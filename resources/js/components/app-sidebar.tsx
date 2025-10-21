@@ -81,7 +81,7 @@ export function AppSidebar() {
   return (
     <Sidebar
       collapsible="icon"
-      variant="inset"
+      variant="sidebar"
       className={cn(
         'border-r border-sidebar-border text-muted-foreground',
         'shadow-[inset_-1px_0_0_rgba(255,255,255,0.04)] transition-all duration-300 ease-in-out',
@@ -112,7 +112,9 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
 
-      <Separator className="mx-4 mb-4 bg-sidebar-border/70" />
+      <div className="mt-auto px-4 pb-6 pt-0">
+        <Separator className="my-2 bg-sidebar-border/70" />
+      </div>
 
       <SidebarContent className="flex-1 overflow-hidden px-3 pb-6 flex items-center">
         <ScrollArea className="h-full pr-1">
@@ -121,7 +123,7 @@ export function AppSidebar() {
               const isActive = activeItem === item.label;
 
               return (
-                <SidebarMenuItem key={item.label}>
+                <SidebarMenuItem key={item.label} className="flex items-center">
                   <Tooltip delayDuration={200}>
                     <TooltipTrigger asChild>
                       <SidebarMenuButton
@@ -155,9 +157,10 @@ export function AppSidebar() {
                     {isCollapsed && (
                       <TooltipContent
                         side="right"
-                        className="border border-sidebar-border bg-[color:var(--surface)]/95 text-xs font-medium text-foreground shadow-[0_12px_30px_rgba(14,13,19,0.45)]"
+                        sideOffset={8}
+                        className="flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium shadow-lg transition-all duration-200"
                       >
-                        {item.label}
+                        <span className="leading-none">{item.label}</span>
                       </TooltipContent>
                     )}
                   </Tooltip>

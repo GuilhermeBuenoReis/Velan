@@ -1,5 +1,9 @@
 import { Head } from '@inertiajs/react';
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
+import { DashboardHealthHabits } from '@/components/dashboard-health-habits';
+import { DashboardHealthOverview } from '@/components/dashboard-health-overview';
+import { DashboardMessagesPanel } from '@/components/dashboard-messages-panel';
+import { DashboardResultsExams } from '@/components/dashboard-results-exams';
+import { DashboardUpcomingAppointments } from '@/components/dashboard-upcoming-appointments';
 import { AppLayout } from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
@@ -15,20 +19,20 @@ export function Dashboard() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
-      <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-        <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-          <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-            <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-          </div>
-          <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-            <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-          </div>
-          <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-            <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-          </div>
+
+      <section className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <DashboardHealthOverview />
+      </section>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+        <div className="space-y-6 lg:space-y-8">
+          <DashboardUpcomingAppointments />
+          <DashboardHealthHabits />
         </div>
-        <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-          <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+
+        <div className="space-y-6 lg:space-y-8">
+          <DashboardMessagesPanel />
+          <DashboardResultsExams />
         </div>
       </div>
     </AppLayout>
