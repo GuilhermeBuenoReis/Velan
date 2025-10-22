@@ -1,9 +1,9 @@
 import { Transition } from '@headlessui/react';
 import { Form, Head, Link, usePage } from '@inertiajs/react';
 import { ProfileController } from '@/components/actions/App/Http/Controllers/Settings/ProfileController';
-import { DeleteUser } from '@/components/delete-user';
-import { HeadingSmall } from '@/components/heading-small';
-import { InputError } from '@/components/input-error';
+import { DeleteUser } from '@/components/auth/delete-user';
+import { HeadingSmall } from '@/components/common/heading-small';
+import { InputError } from '@/components/forms/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

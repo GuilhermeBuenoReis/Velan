@@ -1,7 +1,7 @@
 import { Calendar, FileText, Users } from 'lucide-react';
 import { motion } from 'motion/react';
-import { Card } from './ui/card';
-import { Progress } from './ui/progress';
+import { Card } from '../ui/card';
+import { Progress } from '../ui/progress';
 
 const stats = [
   {

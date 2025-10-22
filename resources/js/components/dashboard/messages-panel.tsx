@@ -5,10 +5,10 @@ import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { Button } from '@/components/ui/button';
 import { createRandomId } from '@/utils/create-random-id';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { Card } from './ui/card';
-import { Input } from './ui/input';
-import { ScrollArea } from './ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Card } from '../ui/card';
+import { Input } from '../ui/input';
+import { ScrollArea } from '../ui/scroll-area';
 
 const messages = [
   {

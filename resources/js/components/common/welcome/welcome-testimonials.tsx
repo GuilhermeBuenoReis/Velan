@@ -1,6 +1,6 @@
 import { Quote } from 'lucide-react';
 import { motion } from 'motion/react';
-import { ImageWithFallback } from '@/components/ImageWithFallback';
+import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 import { createRandomId } from '@/utils/create-random-id';
 
 type TestimonialTone = {

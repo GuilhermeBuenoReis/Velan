@@ -1,7 +1,7 @@
 import { Head } from '@inertiajs/react';
 
-import { AppearanceToggleTab } from '@/components/appearance-tabs';
-import { HeadingSmall } from '@/components/heading-small';
+import { AppearanceToggleTab } from '@/components/layout/appearance-tabs';
+import { HeadingSmall } from '@/components/common/heading-small';
 import { AppLayout } from '@/layouts/app-layout';
 import { SettingsLayout } from '@/layouts/settings/layout';
 import { edit as editAppearance } from '@/routes/appearance';

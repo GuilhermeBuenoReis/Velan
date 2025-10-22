@@ -1,7 +1,7 @@
 import { Menu, X } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { useState } from 'react';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 
 export function WelcomeNavbar() {
   const [isOpen, setIsOpen] = useState(false);

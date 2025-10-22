@@ -1,6 +1,6 @@
 import { ArrowRight, Mail, MapPin, Phone } from 'lucide-react';
 import { motion } from 'motion/react';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 
 const socialLinks = [
   { label: 'twitter', href: '/social/twitter' },

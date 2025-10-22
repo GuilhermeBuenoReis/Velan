@@ -14,7 +14,7 @@ import {
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { logout } from '@/routes';
 import type { SharedData } from '@/types';
-import { useSidebar } from './ui/sidebar';
+import { useSidebar } from '@/components/ui/sidebar';
 
 function getInitials(name: string | undefined) {
   if (!name) return 'US';
