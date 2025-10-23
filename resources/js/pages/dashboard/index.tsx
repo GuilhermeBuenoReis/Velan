@@ -1,12 +1,12 @@
 import { Head } from '@inertiajs/react';
-import { DashboardHealthHabits } from '@/components/dashboard/health-habits';
-import { DashboardHealthOverview } from '@/components/dashboard/health-overview';
-import { DashboardMessagesPanel } from '@/components/dashboard/messages-panel';
-import { DashboardResultsExams } from '@/components/dashboard/results-exams';
-import { DashboardUpcomingAppointments } from '@/components/dashboard/upcoming-appointments';
 import { AppLayout } from '@/layouts/app-layout';
+import { DashboardResultsExams } from '@/pages/dashboard/components/results-exams';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
+import { DashboardHealthHabits } from './components/health-habits';
+import { DashboardHealthOverview } from './components/health-overview';
+import { DashboardMessagesPanel } from './components/messages-panel';
+import { DashboardUpcomingAppointments } from './components/upcoming-appointments';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {

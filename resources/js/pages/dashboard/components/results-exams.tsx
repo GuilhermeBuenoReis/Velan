@@ -3,15 +3,15 @@ import { motion } from 'motion/react';
 import { useState } from 'react';
 import { usePagination } from '@/hooks/use-pagination';
 import { createRandomId } from '@/utils/create-random-id';
-import { Badge } from '../ui/badge';
+import { Badge } from '../../../components/ui/badge';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../ui/card';
-import { Tabs, TabsContent, TabsList } from '../ui/tabs';
+} from '../../../components/ui/card';
+import { Tabs, TabsContent, TabsList } from '../../../components/ui/tabs';
 import { DashboardResultsExamsPagination } from './results-exams-pagination';
 
 const recentExams = [

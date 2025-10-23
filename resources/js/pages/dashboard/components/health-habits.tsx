@@ -1,8 +1,8 @@
 import { Droplets, Footprints, Moon, Smile } from 'lucide-react';
 import { motion } from 'motion/react';
+import { Card } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 import { createRandomId } from '@/utils/create-random-id';
-import { Card } from '../ui/card';
-import { Progress } from '../ui/progress';
 
 const habits = [
   {

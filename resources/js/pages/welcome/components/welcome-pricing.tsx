@@ -1,7 +1,7 @@
 import { Check, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
-import { createRandomId } from '@/utils/create-random-id';
 import { Button } from '@/components/ui/button';
+import { createRandomId } from '@/utils/create-random-id';
 
 type PlanTone = {
   base: string;

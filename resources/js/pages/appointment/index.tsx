@@ -1,8 +1,8 @@
 import { Head } from '@inertiajs/react';
 import dayjs from 'dayjs';
 import { motion } from 'motion/react';
-import { WeeklySchedule } from '@/components/appointments/weekly-schedule';
 import { AppLayout } from '@/layouts/app-layout';
+import { WeeklySchedule } from '@/pages/appointment/components/weekly-schedule';
 import { appointment } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
 import { createRandomId } from '@/utils/create-random-id';

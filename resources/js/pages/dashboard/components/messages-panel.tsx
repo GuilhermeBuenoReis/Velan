@@ -3,12 +3,12 @@ import { Send } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { createRandomId } from '@/utils/create-random-id';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Card } from '../ui/card';
-import { Input } from '../ui/input';
-import { ScrollArea } from '../ui/scroll-area';
 
 const messages = [
   {

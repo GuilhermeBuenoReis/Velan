@@ -1,9 +1,9 @@
 import { Calendar, ChevronRight, Clock, MapPin, Video } from 'lucide-react';
 import { motion } from 'motion/react';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { Card } from '../ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../ui/dialog';
+} from '@/components/ui/dialog';
 
 const appointments = [
   {
