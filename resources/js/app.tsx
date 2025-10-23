@@ -15,27 +15,22 @@ const pages = import.meta.glob<PageModule>('./pages/**/*.tsx');
 createInertiaApp({
   title: title => (title ? `${title} - ${appName}` : appName),
   resolve: async name => {
-    const pageImport = pages[`./pages/${name}.tsx`];
+    const normalized = name.replace(/\./g, '/');
 
-    if (!pageImport) {
-      throw new Error(`Page not found: ${name}`);
+    const possiblePaths = [
+      `./pages/${normalized}.tsx`,
+      `./pages/${normalized}/index.tsx`,
+    ];
+
+    for (const path of possiblePaths) {
+      if (pages[path]) {
+        const pageModule = await pages[path]();
+
+        return pageModule.default || Object.values(pageModule)[0];
+      }
     }
 
-    const page = await pageImport();
-
-    if (page.default) {
-      return page.default;
-    }
-
-    const namedExports = Object.entries(page)
-      .filter(([key]) => key !== 'default')
-      .map(([, component]) => component);
-
-    if (namedExports.length === 0) {
-      throw new Error(`No exports found for page: ${name}`);
-    }
-
-    return namedExports[0];
+    throw new Error(`Page not found: ${name}`);
   },
   setup({ el, App, props }) {
     const root = createRoot(el);

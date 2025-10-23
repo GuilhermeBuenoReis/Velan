@@ -33,7 +33,8 @@
 				"noForEach": "off"
 			},
 			"suspicious": {
-				"noExplicitAny": "off"
+				"noExplicitAny": "off",
+				"noArrayIndexKey": "off"
 			},
 			"correctness": {
 				"useExhaustiveDependencies": "off"

@@ -27,14 +27,14 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { dashboard } from '@/routes';
+import { appointment, dashboard } from '@/routes';
 import { edit as profileEditRoute } from '@/routes/profile';
 import type { SharedData } from '@/types';
 import { AppDropdownMenuProfile } from './app-dropdown-menu-profile';
 
 const navItems = [
   { icon: Home, label: 'Início', href: dashboard().url },
-  { icon: Calendar, label: 'Consultas', href: '/consultas' },
+  { icon: Calendar, label: 'Consultas', href: appointment().url },
   { icon: Users, label: 'Meus Médicos', href: '/medicos' },
   { icon: FileText, label: 'Resultados e Exames', href: '/exames' },
   { icon: Heart, label: 'Saúde & Hábitos', href: '/habitos' },
@@ -132,7 +132,7 @@ export function AppSidebar() {
                         className={cn(
                           'group relative flex w-full items-center gap-3 rounded-[16px] px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-300 ease-in-out',
                           'hover:bg-[color:var(--primary)]/12 hover:text-foreground hover:shadow-[0_0_8px_rgba(107,95,209,0.22)]',
-                          'data-[active=true]:bg-[color:var(--primary)]/16 data-[active=true]:text-primary-foreground data-[active=true]:shadow-[0_0_12px_rgba(107,95,209,0.24)]',
+                          'data-[active=true]:bg-[color:var(--primary)]/16 data-[active=true]:text-sidebar-foreground data-[active=true]:shadow-[0_0_12px_rgba(107,95,209,0.24)]',
                           'group-data-[collapsible=icon]:h-12 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-0'
                         )}
                       >
