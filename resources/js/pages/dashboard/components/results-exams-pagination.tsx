@@ -35,7 +35,7 @@ export function DashboardResultsExamsPagination({
           <PaginationItem>
             <PaginationPrevious
               onClick={prevPage}
-              className="text-[#B8B8C0] hover:bg-white/10 hover:text-white/85"
+              className="text-[var(--color-text-secondary)] hover:bg-white/10 hover:text-white/85"
             />
           </PaginationItem>
 
@@ -45,8 +45,8 @@ export function DashboardResultsExamsPagination({
                 onClick={() => goToPage(page)}
                 isActive={page === currentPage}
                 className={cn(
-                  'text-[#B8B8C0] hover:bg-white/10 hover:text-white/85 cursor-pointer rounded-full',
-                  page === currentPage && 'border-[#6C63FF] text-white'
+                  'text-[var(--color-text-secondary)] hover:bg-white/10 hover:text-white/85 cursor-pointer rounded-full',
+                  page === currentPage && 'border-[color:var(--color-accent)] text-white'
                 )}
               >
                 {page}
@@ -59,7 +59,7 @@ export function DashboardResultsExamsPagination({
           <PaginationItem>
             <PaginationNext
               onClick={nextPage}
-              className="text-[#B8B8C0] hover:bg-white/10 hover:text-white/85"
+              className="text-[var(--color-text-secondary)] hover:bg-white/10 hover:text-white/85"
             />
           </PaginationItem>
         </PaginationContent>

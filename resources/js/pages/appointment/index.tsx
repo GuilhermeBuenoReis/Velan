@@ -1,118 +1,30 @@
 import { Head } from '@inertiajs/react';
-import dayjs from 'dayjs';
+import { MessageSquare, Plus } from 'lucide-react';
 import { motion } from 'motion/react';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { AppLayout } from '@/layouts/app-layout';
-import { WeeklySchedule } from '@/pages/appointment/components/weekly-schedule';
+
 import { appointment } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
-import { createRandomId } from '@/utils/create-random-id';
-
-dayjs.locale('pt-br');
-
-export interface Appointment {
-  id: string;
-  patient: string;
-  patientAvatar?: string;
-  doctor: string;
-  doctorAvatar?: string;
-  specialty: string;
-  date: string;
-  time: string;
-  endTime: string;
-  type: 'Presencial' | 'Online';
-  status: 'Confirmada' | 'Pendente' | 'Cancelada';
-  notes?: string;
-  dayOfWeek?: string;
-}
-
-const baseWeek = dayjs().startOf('week').add(1, 'day'); // segunda
-
-export const appointments: Appointment[] = [
-  {
-    id: createRandomId(),
-    patient: 'Carlos Eduardo',
-    patientAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos',
-    doctor: 'Dr. João Silva',
-    doctorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Joao',
-    specialty: 'Cardiologia',
-    date: baseWeek.add(1, 'day').format('DD/MM/YYYY'),
-    time: '09:00',
-    endTime: '09:30',
-    type: 'Presencial' as const,
-    status: 'Confirmada' as const,
-    notes: 'Retorno - Avaliar resultados de exames cardiológicos',
-  },
-  {
-    id: createRandomId(),
-    patient: 'Maria Fernanda',
-    patientAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maria',
-    doctor: 'Dra. Ana Beatriz',
-    doctorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ana',
-    specialty: 'Dermatologia',
-    date: baseWeek.add(1, 'day').format('DD/MM/YYYY'),
-    time: '10:30',
-    endTime: '11:00',
-    type: 'Online' as const,
-    status: 'Pendente' as const,
-    notes: 'Consulta inicial - Avaliação de manchas na pele',
-  },
-  {
-    id: createRandomId(),
-    patient: 'Pedro Santos',
-    patientAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Pedro',
-    doctor: 'Dr. Ricardo Fernandes',
-    doctorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ricardo',
-    specialty: 'Ortopedia',
-    date: baseWeek.add(2, 'day').format('DD/MM/YYYY'),
-    time: '14:00',
-    endTime: '14:30',
-    type: 'Presencial' as const,
-    status: 'Confirmada' as const,
-    notes: 'Avaliação de dor no joelho',
-  },
-  {
-    id: createRandomId(),
-    patient: 'Juliana Costa',
-    patientAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Juliana',
-    doctor: 'Dra. Mariana Costa',
-    doctorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mariana',
-    specialty: 'Oftalmologia',
-    date: baseWeek.add(3, 'day').format('DD/MM/YYYY'),
-    time: '09:15',
-    endTime: '09:45',
-    type: 'Presencial' as const,
-    status: 'Confirmada' as const,
-    notes: 'Exame de rotina - Renovação de receita de óculos',
-  },
-  {
-    id: createRandomId(),
-    patient: 'Roberto Almeida',
-    patientAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Roberto',
-    doctor: 'Dr. Paulo Mendes',
-    doctorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Paulo',
-    specialty: 'Clínico Geral',
-    date: baseWeek.add(4, 'day').format('DD/MM/YYYY'),
-    time: '11:00',
-    endTime: '11:30',
-    type: 'Online' as const,
-    status: 'Pendente' as const,
-    notes: 'Consulta de rotina',
-  },
-  {
-    id: createRandomId(),
-    patient: 'Lucas Barbosa',
-    patientAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lucas',
-    doctor: 'Dra. Ana Beatriz',
-    doctorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ana',
-    specialty: 'Dermatologia',
-    date: baseWeek.add(5, 'day').format('DD/MM/YYYY'),
-    time: '15:00',
-    endTime: '15:30',
-    type: 'Presencial' as const,
-    status: 'Cancelada' as const,
-    notes: 'Consulta desmarcada pelo paciente',
-  },
-];
+import { CalendarHeader } from './components/calendar-header';
+import { ChatAssistantModal } from './components/chat-assistant-modal';
+import { DayView } from './components/day-view';
+import { EventDetailsModal } from './components/event-details-modal';
+import { MonthView } from './components/month-view';
+import { NewAppointmentModal } from './components/new-appointment-modal';
+import { WeekView } from './components/week-view';
+import { YearView } from './components/year-view';
+import { CalendarProvider, useCalendar } from './context/calendar-context';
+import {
+  ChatAssistantProvider,
+  useChatAssistant,
+} from './context/chat-assistant-context';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -121,30 +33,115 @@ const breadcrumbs: BreadcrumbItem[] = [
   },
 ];
 
+function FloatingActions() {
+  const { openEventModal } = useCalendar();
+  const { openChat } = useChatAssistant();
+
+  return (
+    <div className="fixed bottom-8 right-8 z-20 flex flex-col gap-3">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.2 }}
+      >
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Button
+            onClick={openChat}
+            className="h-14 w-14 rounded-full bg-gradient-to-br from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 shadow-lg hover:shadow-xl transition-shadow relative group"
+            size="icon"
+          >
+            <MessageSquare className="h-6 w-6" />
+            <motion.div
+              className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+            <div className="absolute right-full mr-3 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+              Assistente IA
+            </div>
+          </Button>
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+      >
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                className="h-14 w-14 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transition-shadow group"
+                size="icon"
+              >
+                <Plus className="h-6 w-6" />
+                <div className="absolute right-full mr-3 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                  Nova Consulta
+                </div>
+              </Button>
+            </motion.div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuItem onClick={openChat}>
+              <MessageSquare className="h-4 w-4 mr-2" />
+              Agendar com Assistente
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => openEventModal()}>
+              <Plus className="h-4 w-4 mr-2" />
+              Criar Manualmente
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </motion.div>
+    </div>
+  );
+}
+
+function CalendarContent() {
+  const { currentView } = useCalendar();
+
+  return (
+    <>
+      {currentView === 'day' && <DayView />}
+      {currentView === 'week' && <WeekView />}
+      {currentView === 'month' && <MonthView />}
+      {currentView === 'year' && <YearView />}
+
+      <EventDetailsModal />
+      <NewAppointmentModal />
+      <ChatAssistantModal />
+    </>
+  );
+}
+
 export function Appointment() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Consultas" />
-      <main className="w-full min-h-screen bg-[#0D0D15] flex flex-col items-center justify-start text-gray-200">
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="w-full flex flex-col items-center"
-        >
-          <div className="w-full flex flex-col items-center text-center mt-6 mb-4">
-            <h1 className="text-xl font-semibold text-white">Consultas</h1>
-            <p className="text-sm text-gray-400">
-              Gerencie todas as consultas agendadas e o histórico de
-              atendimentos
-            </p>
-          </div>
 
-          <div className="flex justify-center w-full">
-            <WeeklySchedule appointments={appointments} />
-          </div>
-        </motion.div>
-      </main>
+      <ChatAssistantProvider>
+        <CalendarProvider>
+          <main className="w-full min-h-screen bg-[var(--color-surface-deep)] flex flex-col text-gray-200">
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="flex flex-col items-center"
+            >
+              <div className="text-center mt-6 mb-4">
+                <h1 className="text-xl font-semibold text-white">Consultas</h1>
+                <p className="text-sm text-gray-400">
+                  Gerencie, edite e acompanhe seus agendamentos em tempo real
+                </p>
+              </div>
+
+              <CalendarHeader />
+              <CalendarContent />
+              <FloatingActions />
+            </motion.div>
+          </main>
+        </CalendarProvider>
+      </ChatAssistantProvider>
     </AppLayout>
   );
 }

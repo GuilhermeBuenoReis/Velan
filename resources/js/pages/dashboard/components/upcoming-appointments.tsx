@@ -1,5 +1,6 @@
 import { Calendar, ChevronRight, Clock, MapPin, Video } from 'lucide-react';
 import { motion } from 'motion/react';
+import type { CSSProperties } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -52,20 +53,28 @@ const appointments = [
   },
 ];
 
+const mixColor = (cssVar: string, percentage: number) =>
+  `color-mix(in srgb, ${cssVar} ${percentage}%, transparent)`;
+
 export function DashboardUpcomingAppointments() {
   return (
     <Card className="mt-4 p-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2>Próximas Consultas</h2>
-          <p className="text-sm text-[#B8B8C0] mt-1">
+          <p className="text-sm text-[var(--color-text-secondary)] mt-1">
             Suas consultas agendadas
           </p>
         </div>
         <Button
           variant="ghost"
           size="sm"
-          className="text-[#00C6AE] hover:bg-[#00C6AE]/10"
+          className="text-[var(--color-chart-4)] hover:bg-[var(--upcoming-see-all-hover)]"
+          style={
+            {
+              '--upcoming-see-all-hover': mixColor('var(--color-chart-4)', 10),
+            } as CSSProperties
+          }
         >
           Ver todas
         </Button>
@@ -81,12 +90,38 @@ export function DashboardUpcomingAppointments() {
           >
             <Dialog>
               <DialogTrigger asChild>
-                <Card className="p-4 bg-white/5 border border-white/10 rounded-xl hover:border-[#6C63FF]/30 hover:bg-white/10 transition-all cursor-pointer group">
+                <Card
+                  className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all cursor-pointer group hover:border-[color:var(--upcoming-card-hover-border)]"
+                  style={
+                    {
+                      '--upcoming-card-hover-border': mixColor(
+                        'var(--color-accent)',
+                        30
+                      ),
+                    } as CSSProperties
+                  }
+                >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-start gap-3 flex-1">
-                      <Avatar className="w-12 h-12 border-2 border-[#6C63FF]/30">
+                      <Avatar
+                        className="w-12 h-12 border-2 border-[color:var(--upcoming-avatar-border)]"
+                        style={
+                          {
+                            '--upcoming-avatar-border': mixColor(
+                              'var(--color-accent)',
+                              30
+                            ),
+                          } as CSSProperties
+                        }
+                      >
                         <AvatarImage src={appointment.avatar} />
-                        <AvatarFallback>
+                        <AvatarFallback
+                          className="text-white"
+                          style={{
+                            background:
+                              'linear-gradient(135deg, var(--color-accent), var(--color-chart-4))',
+                          }}
+                        >
                           {appointment.doctor.split(' ')[1][0]}
                         </AvatarFallback>
                       </Avatar>
@@ -96,20 +131,36 @@ export function DashboardUpcomingAppointments() {
                           <h4 className="truncate">{appointment.doctor}</h4>
                           <Badge
                             variant="secondary"
-                            className={`shrink-0 ${
-                              appointment.status === 'Confirmada'
-                                ? 'bg-[#10B981]/20 text-[#10B981] border-[#10B981]/30'
-                                : 'bg-[#F7C948]/20 text-[#F7C948] border-[#F7C948]/30'
-                            }`}
+                            className="shrink-0"
+                            style={
+                              ({
+                                borderColor: mixColor(
+                                  appointment.status === 'Confirmada'
+                                    ? 'var(--color-success)'
+                                    : 'var(--color-warning)',
+                                  30
+                                ),
+                                background: mixColor(
+                                  appointment.status === 'Confirmada'
+                                    ? 'var(--color-success)'
+                                    : 'var(--color-warning)',
+                                  20
+                                ),
+                                color:
+                                  appointment.status === 'Confirmada'
+                                    ? 'var(--color-success)'
+                                    : 'var(--color-warning)',
+                              } as CSSProperties)
+                            }
                           >
                             {appointment.status}
                           </Badge>
                         </div>
-                        <p className="text-sm text-[#B8B8C0] mb-2">
+                        <p className="text-sm text-[var(--color-text-secondary)] mb-2">
                           {appointment.specialty}
                         </p>
 
-                        <div className="flex flex-wrap items-center gap-3 text-sm text-[#B8B8C0]">
+                        <div className="flex flex-wrap items-center gap-3 text-sm text-[var(--color-text-secondary)]">
                           <div className="flex items-center gap-1">
                             <Calendar className="w-4 h-4" />
                             <span>{appointment.date}</span>
@@ -120,7 +171,7 @@ export function DashboardUpcomingAppointments() {
                           </div>
                           <div className="flex items-center gap-1">
                             {appointment.type === 'Telemedicina' ? (
-                              <Video className="w-4 h-4 text-[#00C6AE]" />
+                              <Video className="w-4 h-4 text-[var(--color-chart-4)]" />
                             ) : (
                               <MapPin className="w-4 h-4" />
                             )}
@@ -130,23 +181,50 @@ export function DashboardUpcomingAppointments() {
                       </div>
                     </div>
 
-                    <ChevronRight className="w-5 h-5 text-[#B8B8C0] group-hover:text-[#6C63FF] transition-colors shrink-0" />
+                    <ChevronRight className="w-5 h-5 text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent)] transition-colors shrink-0" />
                   </div>
                 </Card>
               </DialogTrigger>
 
-              <DialogContent className="bg-[#1A152A]/95 backdrop-blur-xl border border-[#6C63FF]/20 rounded-2xl">
+              <DialogContent
+                className="backdrop-blur-xl border rounded-2xl"
+                style={
+                  {
+                    backgroundColor: mixColor(
+                      'var(--color-surface-indigo)',
+                      95
+                    ),
+                    borderColor: mixColor('var(--color-accent)', 20),
+                  } as CSSProperties
+                }
+              >
                 <DialogHeader>
                   <DialogTitle className="flex items-center gap-3">
-                    <Avatar className="w-12 h-12 border-2 border-[#6C63FF]/50">
+                    <Avatar
+                      className="w-12 h-12 border-2 border-[color:var(--upcoming-dialog-avatar-border)]"
+                      style={
+                        {
+                          '--upcoming-dialog-avatar-border': mixColor(
+                            'var(--color-accent)',
+                            50
+                          ),
+                        } as CSSProperties
+                      }
+                    >
                       <AvatarImage src={appointment.avatar} />
-                      <AvatarFallback>
+                      <AvatarFallback
+                        className="text-white"
+                        style={{
+                          background:
+                            'linear-gradient(135deg, var(--color-accent), var(--color-chart-4))',
+                        }}
+                      >
                         {appointment.doctor.split(' ')[1][0]}
                       </AvatarFallback>
                     </Avatar>
                     <div>
                       <h3>{appointment.doctor}</h3>
-                      <p className="text-sm text-[#B8B8C0]">
+                      <p className="text-sm text-[var(--color-text-secondary)]">
                         {appointment.specialty}
                       </p>
                     </div>
@@ -159,41 +237,65 @@ export function DashboardUpcomingAppointments() {
                 <div className="space-y-4 mt-4">
                   <div className="p-4 bg-white/5 rounded-xl space-y-3">
                     <div className="flex items-center gap-3">
-                      <Calendar className="w-5 h-5 text-[#6C63FF]" />
+                      <Calendar className="w-5 h-5 text-[var(--color-accent)]" />
                       <div>
-                        <p className="text-sm text-[#B8B8C0]">Data</p>
+                        <p className="text-sm text-[var(--color-text-secondary)]">
+                          Data
+                        </p>
                         <p>{appointment.date}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <Clock className="w-5 h-5 text-[#00C6AE]" />
+                      <Clock className="w-5 h-5 text-[var(--color-chart-4)]" />
                       <div>
-                        <p className="text-sm text-[#B8B8C0]">Horário</p>
+                        <p className="text-sm text-[var(--color-text-secondary)]">
+                          Horário
+                        </p>
                         <p>{appointment.time}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
                       {appointment.type === 'Telemedicina' ? (
-                        <Video className="w-5 h-5 text-[#F7C948]" />
+                        <Video className="w-5 h-5 text-[var(--color-warning)]" />
                       ) : (
-                        <MapPin className="w-5 h-5 text-[#F7C948]" />
+                        <MapPin className="w-5 h-5 text-[var(--color-warning)]" />
                       )}
                       <div>
-                        <p className="text-sm text-[#B8B8C0]">Local</p>
+                        <p className="text-sm text-[var(--color-text-secondary)]">
+                          Local
+                        </p>
                         <p>{appointment.location}</p>
                       </div>
                     </div>
                   </div>
 
                   <div className="flex gap-2">
-                    <Button className="flex-1 bg-gradient-to-r from-[#6C63FF] to-[#00C6AE] hover:opacity-90">
+                    <Button
+                      className="flex-1 hover:opacity-90"
+                      style={{
+                        backgroundImage:
+                          'linear-gradient(to right, var(--color-accent), var(--color-chart-4))',
+                      }}
+                    >
                       {appointment.type === 'Telemedicina'
                         ? 'Entrar na Videochamada'
                         : 'Ver Localização'}
                     </Button>
                     <Button
                       variant="outline"
-                      className="border-[#EF4444]/30 text-[#EF4444] hover:bg-[#EF4444]/10"
+                      className="text-[var(--color-destructive)] hover:bg-[var(--upcoming-cancel-hover)] border-[color:var(--color-destructive-light)]"
+                      style={
+                        {
+                          '--upcoming-cancel-hover': mixColor(
+                            'var(--color-destructive)',
+                            10
+                          ),
+                          '--color-destructive-light': mixColor(
+                            'var(--color-destructive)',
+                            30
+                          ),
+                        } as CSSProperties
+                      }
                     >
                       Cancelar
                     </Button>

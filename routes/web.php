@@ -15,6 +15,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('appointment', function() {
         return Inertia::render('appointment');
     })->name('appointment');
+    
+    Route::get('doctor-list', function() {
+        return Inertia::render('doctor-list');
+    })->name('doctor-list');
 });
 
 require __DIR__.'/settings.php';

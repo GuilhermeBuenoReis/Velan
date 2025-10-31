@@ -1,5 +1,6 @@
 import { Calendar, FileText } from 'lucide-react';
 import { motion } from 'motion/react';
+import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { usePagination } from '@/hooks/use-pagination';
 import { createRandomId } from '@/utils/create-random-id';
@@ -98,6 +99,9 @@ const historyExams = [
 
 type ExamsTabs = 'recent' | 'history';
 
+const mixColor = (cssVar: string, percentage: number) =>
+  `color-mix(in srgb, ${cssVar} ${percentage}%, transparent)`;
+
 export function DashboardResultsExams() {
   const [activeTab, setActiveTab] = useState<ExamsTabs>('recent');
 
@@ -123,7 +127,7 @@ export function DashboardResultsExams() {
         <CardTitle className="mt-6 text-[1.05rem]">
           Resultados e Exames
         </CardTitle>
-        <CardDescription className="text-sm text-[#B8B8C0] mt-1">
+        <CardDescription className="text-sm text-[var(--color-text-secondary)] mt-1">
           Acesse seus resultados médicos
         </CardDescription>
       </CardHeader>
@@ -145,14 +149,20 @@ export function DashboardResultsExams() {
                   key={tab.value}
                   onClick={() => setActiveTab(tab.value as ExamsTabs)}
                   className={`relative text-sm p-2 font-medium transition-colors duration-200 flex-1 cursor-pointer ${
-                    isActive ? 'text-white' : 'text-[#999] hover:text-white/80'
+                    isActive
+                      ? 'text-white'
+                      : 'text-[var(--color-text-tertiary)] hover:text-white/80'
                   }`}
                 >
                   {tab.label}
                   {isActive && (
                     <motion.div
                       layoutId="underline"
-                      className="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-gradient-to-r from-[#6C63FF] to-[#00C6AE] rounded-sm"
+                      className="absolute -bottom-[1px] left-0 right-0 h-[2px] rounded-sm"
+                      style={{
+                        backgroundImage:
+                          'linear-gradient(to right, var(--color-accent), var(--color-chart-4))',
+                      }}
                       transition={{
                         type: 'spring',
                         stiffness: 500,
@@ -166,61 +176,82 @@ export function DashboardResultsExams() {
           </TabsList>
 
           <TabsContent value={activeTab} className="space-y-2">
-            {paginatedData.map((exam, index) => (
-              <motion.div
-                key={exam.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.08 }}
-              >
-                <Card
-                  className={`p-4 border rounded-xl transition-all hover:scale-[1.02] ${
-                    exam.highlight
-                      ? 'bg-[#F7C948]/10 border-[#F7C948]/30 hover:border-[#F7C948]/50'
-                      : 'bg-white/5 border-white/10 hover:border-white/20'
-                  }`}
+            {paginatedData.map((exam, index) => {
+              const accent = exam.highlight
+                ? 'var(--color-warning)'
+                : 'var(--color-accent)';
+              const cardStyles = {
+                '--exam-bg': exam.highlight
+                  ? mixColor(accent, 10)
+                  : mixColor('var(--color-surface)', 5),
+                '--exam-border': exam.highlight
+                  ? mixColor(accent, 30)
+                  : mixColor('var(--color-surface)', 10),
+                '--exam-border-hover': exam.highlight
+                  ? mixColor(accent, 50)
+                  : mixColor('var(--color-surface)', 20),
+                '--exam-icon-bg': mixColor(accent, 20),
+                '--exam-icon-shadow': mixColor(
+                  accent,
+                  exam.highlight ? 30 : 25
+                ),
+                '--exam-icon-color': accent,
+              } as CSSProperties;
+
+              return (
+                <motion.div
+                  key={exam.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.08 }}
                 >
-                  {/* conteúdo do exame */}
-                  <div className="flex items-start gap-3 flex-1">
-                    <div
-                      className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${
-                        exam.highlight ? 'bg-[#F7C948]/20' : 'bg-[#6C63FF]/20'
-                      }`}
-                      style={{
-                        boxShadow: exam.highlight
-                          ? '0 0 15px rgba(247, 201, 72, 0.3)'
-                          : '0 0 15px rgba(108, 99, 255, 0.25)',
-                      }}
-                    >
-                      <FileText
-                        className="w-6 h-6"
+                  <Card
+                    className="p-4 border rounded-xl transition-all hover:scale-[1.02] bg-[var(--exam-bg)] border-[color:var(--exam-border)] hover:border-[color:var(--exam-border-hover)]"
+                    style={cardStyles}
+                  >
+                    <div className="flex items-start gap-3 flex-1">
+                      <div
+                        className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0"
                         style={{
-                          color: exam.highlight ? '#F7C948' : '#6C63FF',
+                          background: 'var(--exam-icon-bg)',
+                          boxShadow: `0 0 15px var(--exam-icon-shadow)`,
                         }}
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="mb-1 flex items-start justify-between gap-2">
-                        <h4 className="truncate">{exam.name}</h4>
-                        {exam.highlight && (
-                          <Badge className="shrink-0 border-[#F7C948]/30 bg-[#F7C948]/20 text-[#F7C948]">
-                            Novo
-                          </Badge>
-                        )}
+                      >
+                        <FileText
+                          className="w-6 h-6"
+                          style={{ color: 'var(--exam-icon-color)' }}
+                        />
                       </div>
-                      <div className="mb-3 flex items-center gap-3 text-sm text-[#B8B8C0]">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          <span>{exam.date}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="mb-1 flex items-start justify-between gap-2">
+                          <h4 className="truncate">{exam.name}</h4>
+                          {exam.highlight && (
+                            <Badge
+                              className="shrink-0"
+                              style={{
+                                borderColor: mixColor(accent, 30),
+                                background: mixColor(accent, 20),
+                                color: accent,
+                              }}
+                            >
+                              Novo
+                            </Badge>
+                          )}
                         </div>
-                        <span>•</span>
-                        <span>{exam.doctor}</span>
+                        <div className="mb-3 flex items-center gap-3 text-sm text-[var(--color-text-secondary)]">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            <span>{exam.date}</span>
+                          </div>
+                          <span>•</span>
+                          <span>{exam.doctor}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
+                  </Card>
+                </motion.div>
+              );
+            })}
 
             <DashboardResultsExamsPagination
               totalPages={totalPages}
