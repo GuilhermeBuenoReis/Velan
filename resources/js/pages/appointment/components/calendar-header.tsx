@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import type { CalendarView } from '../context/calendar-context';
 import { useCalendar } from '../context/calendar-context';
 
 export function CalendarHeader() {
@@ -12,16 +13,16 @@ export function CalendarHeader() {
     useCalendar();
 
   const formatDateRangeByView = (date: Dayjs, view: string): string => {
-    const d = date.locale('pt-br');
+    const dateFormat = date.locale('pt-br');
 
-    if (view === 'day') return d.format('dddd, D [de] MMMM [de] YYYY');
+    if (view === 'day') return dateFormat.format('dddd, D [de] MMMM [de] YYYY');
     if (view === 'week') {
-      const start = d.startOf('week').format('D MMM');
-      const end = d.endOf('week').format('D MMM YYYY');
+      const start = dateFormat.startOf('week').format('D MMM');
+      const end = dateFormat.endOf('week').format('D MMM YYYY');
       return `${start} - ${end}`;
     }
-    if (view === 'month') return d.format('MMMM [de] YYYY');
-    if (view === 'year') return d.format('YYYY');
+    if (view === 'month') return dateFormat.format('MMMM [de] YYYY');
+    if (view === 'year') return dateFormat.format('YYYY');
     return '';
   };
 
@@ -29,84 +30,76 @@ export function CalendarHeader() {
     <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="sticky top-0 z-10 border-b border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-4 shadow-sm"
+      className="px-6 py-4"
     >
       <div className="flex items-center justify-between gap-6">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-white shadow-sm"
-              style={{
-                backgroundImage:
-                  'linear-gradient(135deg, var(--color-secondary), var(--color-primary))',
-              }}
-            >
-              <Calendar className="h-5 w-5" />
-            </div>
-            <span className="tracking-tight text-[var(--color-text)] font-medium">
-              HealthCare
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <h1 className="min-w-[280px] text-[var(--color-text)] font-medium">
+        <div className="flex items-center">
+          <div className="flex items-center gap-3 min-w-[320px]">
+            <Calendar className="mr-2 h-5 w-5 text-[var(--color-primary)]" />
+            <h1 className="text-[var(--color-text)] font-semibold text-lg capitalize">
               {formatDateRangeByView(currentDate, currentView)}
             </h1>
-            <div className="flex items-center gap-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={goPrevious}
-                className="h-8 w-8 rounded-lg hover:bg-[var(--color-surface-hover)]"
-              >
-                <ChevronLeft className="h-4 w-4 text-[var(--color-text-secondary)]" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={goNext}
-                className="h-8 w-8 rounded-lg hover:bg-[var(--color-surface-hover)]"
-              >
-                <ChevronRight className="h-4 w-4 text-[var(--color-text-secondary)]" />
-              </Button>
-            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={goPrevious}
+              className="h-8 w-8 rounded-full hover:bg-[var(--color-surface-hover)] cursor-pointer"
+            >
+              <ChevronLeft className="h-4 w-4 text-[var(--color-text-secondary)]" />
+            </Button>
+
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={goNext}
+              className="h-8 w-8 rounded-full hover:bg-[var(--color-surface-hover)] cursor-pointer"
+            >
+              <ChevronRight className="h-4 w-4 text-[var(--color-text-secondary)]" />
+            </Button>
+
             <Button
               variant="outline"
               size="sm"
               onClick={goToday}
-              className="rounded-lg border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface-hover)]"
+              className="rounded-sm border-[var(--color-border)] text-gray-900 p-3 cursor-pointer"
             >
-              Today
+              Hoje
             </Button>
           </div>
         </div>
 
         <div className="flex items-center gap-4">
-          <Tabs value={currentView} onValueChange={setView}>
+          <Tabs
+            value={currentView}
+            onValueChange={value => setView(value as CalendarView)}
+          >
             <TabsList className="h-9 bg-[var(--color-surface-muted)]">
               <TabsTrigger
                 value="day"
-                className="data-[state=active]:bg-[var(--color-surface)]"
+                className="data-[state=active]:bg-[var(--color-surface)] cursor-pointer"
               >
-                Day
+                Dia
               </TabsTrigger>
               <TabsTrigger
                 value="week"
-                className="data-[state=active]:bg-[var(--color-surface)]"
+                className="data-[state=active]:bg-[var(--color-surface)] cursor-pointer"
               >
-                Week
+                Semana
               </TabsTrigger>
               <TabsTrigger
                 value="month"
-                className="data-[state=active]:bg-[var(--color-surface)]"
+                className="data-[state=active]:bg-[var(--color-surface)] cursor-pointer"
               >
-                Month
+                Mês
               </TabsTrigger>
               <TabsTrigger
                 value="year"
-                className="data-[state=active]:bg-[var(--color-surface)]"
+                className="data-[state=active]:bg-[var(--color-surface)] cursor-pointer"
               >
-                Year
+                Ano
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -115,13 +108,9 @@ export function CalendarHeader() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-secondary)]" />
             <Input
               type="text"
-              placeholder="Search events..."
+              placeholder="Pesquisar por eventos"
               className="h-9 w-64 rounded-lg border-[var(--color-border)] bg-[var(--color-surface)] pl-9 text-[var(--color-text)] focus:border-[var(--color-border-strong)]"
             />
-          </div>
-
-          <div className="text-xs text-[var(--color-text-secondary)]">
-            GMT-3
           </div>
         </div>
       </div>

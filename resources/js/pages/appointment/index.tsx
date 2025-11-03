@@ -121,7 +121,7 @@ export function Appointment() {
 
       <ChatAssistantProvider>
         <CalendarProvider>
-          <main className="w-full min-h-screen bg-[var(--color-surface-deep)] flex flex-col text-gray-200">
+          <main className="w-full min-h-screen flex flex-col text-gray-200">
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}

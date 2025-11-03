@@ -22,13 +22,17 @@ export function ChatAssistantModal() {
     currentStep,
     setStep,
     addBotMessage,
+    clearMessages,
   } = useChatAssistant();
 
   useEffect(() => {
     if (!isOpen) return;
+    clearMessages();
     setStep('greeting');
-    setTimeout(() => addBotMessage('greeting'), 400);
-  }, [isOpen]);
+    const timer = window.setTimeout(() => addBotMessage('greeting'), 400);
+
+    return () => window.clearTimeout(timer);
+  }, [addBotMessage, clearMessages, isOpen, setStep]);
 
   return (
     <Dialog

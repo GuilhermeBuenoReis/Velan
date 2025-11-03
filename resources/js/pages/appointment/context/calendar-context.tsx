@@ -1,27 +1,56 @@
 import dayjs from 'dayjs';
-import { createContext, useContext, useMemo, useState } from 'react';
+import 'dayjs/locale/pt-br';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react';
 import { useUrlState } from '@/hooks/use-url-state';
 import type { CalendarEvent } from '../types/event';
 
-type CalendarView = 'day' | 'week' | 'month' | 'year';
+dayjs.locale('pt-br');
+
+export type CalendarView = 'day' | 'week' | 'month' | 'year';
+
+type OpenEventModalOptions = {
+  event?: CalendarEvent;
+  date?: string;
+};
 
 interface CalendarContextType {
   currentDate: dayjs.Dayjs;
   currentView: CalendarView;
+  setDate: (value: dayjs.Dayjs) => void;
   goNext: () => void;
   goPrevious: () => void;
   goToday: () => void;
-  setView: (value: string) => void;
+  setView: (value: CalendarView) => void;
   events: CalendarEvent[];
   addEvent: (event: Omit<CalendarEvent, 'id'>) => void;
   updateEvent: (id: string, updated: Partial<CalendarEvent>) => void;
   deleteEvent: (id: string) => void;
   selectedEvent: CalendarEvent | null;
   setSelectedEvent: (event: CalendarEvent | null) => void;
+  draftEventDate: string | null;
   isEventModalOpen: boolean;
-  openEventModal: (event?: CalendarEvent) => void;
+  openEventModal: (options?: OpenEventModalOptions) => void;
   closeEventModal: () => void;
+  weekDaysShort: string[];
+  weekDaysFull: string[];
 }
+
+const WEEK_DAYS_PT_SHORT = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+const WEEK_DAYS_PT_FULL = [
+  'Domingo',
+  'Segunda-feira',
+  'Terça-feira',
+  'Quarta-feira',
+  'Quinta-feira',
+  'Sexta-feira',
+  'Sábado',
+];
 
 const CalendarContext = createContext<CalendarContextType | null>(null);
 
@@ -33,59 +62,88 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
   );
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [draftEventDate, setDraftEventDate] = useState<string | null>(null);
 
   const currentDate = dayjs(dateValue);
+
   const currentView: CalendarView = ['day', 'week', 'month', 'year'].includes(
     viewValue
   )
     ? (viewValue as CalendarView)
     : 'month';
 
-  const goNext = () => {
+  const setDate = useCallback(
+    (value: dayjs.Dayjs) => {
+      setDateValue(value.format());
+    },
+    [setDateValue]
+  );
+
+  const goNext = useCallback(() => {
     const nextDate = currentDate.add(1, currentView);
     setDateValue(nextDate.format());
-  };
+  }, [currentDate, currentView, setDateValue]);
 
-  const goPrevious = () => {
+  const goPrevious = useCallback(() => {
     const prevDate = currentDate.subtract(1, currentView);
     setDateValue(prevDate.format());
-  };
+  }, [currentDate, currentView, setDateValue]);
 
-  const goToday = () => setDateValue(dayjs().format());
+  const goToday = useCallback(() => {
+    setDateValue(dayjs().format());
+  }, [setDateValue]);
 
-  const setView = (value: string) => {
-    if (['day', 'week', 'month', 'year'].includes(value)) setViewValue(value);
-  };
+  const setView = useCallback(
+    (value: CalendarView) => {
+      setViewValue(value);
+    },
+    [setViewValue]
+  );
 
-  const addEvent = (event: Omit<CalendarEvent, 'id'>) => {
+  const addEvent = useCallback((event: Omit<CalendarEvent, 'id'>) => {
     const newEvent: CalendarEvent = { id: crypto.randomUUID(), ...event };
     setEvents(prev => [...prev, newEvent]);
-  };
+  }, []);
 
-  const updateEvent = (id: string, updated: Partial<CalendarEvent>) => {
-    setEvents(prev =>
-      prev.map(event => (event.id === id ? { ...event, ...updated } : event))
-    );
-  };
+  const updateEvent = useCallback(
+    (id: string, updated: Partial<CalendarEvent>) => {
+      setEvents(prev =>
+        prev.map(event => (event.id === id ? { ...event, ...updated } : event))
+      );
+    },
+    []
+  );
 
-  const deleteEvent = (id: string) => {
+  const deleteEvent = useCallback((id: string) => {
     setEvents(prev => prev.filter(event => event.id !== id));
-  };
+  }, []);
 
-  const openEventModal = (event?: CalendarEvent) => {
-    if (event) setSelectedEvent(event);
-    setIsEventModalOpen(true);
-  };
+  const openEventModal = useCallback(
+    (options: OpenEventModalOptions = {}) => {
+      const { event, date } = options;
+      if (event) {
+        setSelectedEvent(event);
+        setDraftEventDate(event.date);
+      } else {
+        setSelectedEvent(null);
+        setDraftEventDate(date ?? currentDate.format('YYYY-MM-DD'));
+      }
+      setIsEventModalOpen(true);
+    },
+    [currentDate]
+  );
 
-  const closeEventModal = () => {
+  const closeEventModal = useCallback(() => {
     setSelectedEvent(null);
+    setDraftEventDate(null);
     setIsEventModalOpen(false);
-  };
+  }, []);
 
   const value = useMemo(
     () => ({
       currentDate,
       currentView,
+      setDate,
       goNext,
       goPrevious,
       goToday,
@@ -96,11 +154,31 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
       deleteEvent,
       selectedEvent,
       setSelectedEvent,
+      draftEventDate,
       isEventModalOpen,
       openEventModal,
       closeEventModal,
+      weekDaysShort: WEEK_DAYS_PT_SHORT,
+      weekDaysFull: WEEK_DAYS_PT_FULL,
     }),
-    [currentDate, currentView, events, selectedEvent, isEventModalOpen]
+    [
+      currentDate,
+      currentView,
+      setDate,
+      goNext,
+      goPrevious,
+      goToday,
+      setView,
+      events,
+      addEvent,
+      updateEvent,
+      deleteEvent,
+      selectedEvent,
+      draftEventDate,
+      isEventModalOpen,
+      openEventModal,
+      closeEventModal,
+    ]
   );
 
   return (

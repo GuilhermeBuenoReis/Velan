@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
@@ -38,8 +39,15 @@ const newAppointmentSchema = z.object({
 type NewAppointmentFormData = z.infer<typeof newAppointmentSchema>;
 
 export function NewAppointmentModal() {
-  const { isEventModalOpen, closeEventModal } = useCalendar();
+  const {
+    isEventModalOpen,
+    closeEventModal,
+    selectedEvent,
+    addEvent,
+    draftEventDate,
+  } = useCalendar();
   const { setAppointment } = useChatAssistant();
+  const isOpen = isEventModalOpen && !selectedEvent;
 
   const {
     register,
@@ -62,6 +70,23 @@ export function NewAppointmentModal() {
     },
   });
 
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    if (draftEventDate) {
+      setValue('date', draftEventDate, { shouldDirty: false });
+    }
+  }, [draftEventDate, isOpen, setValue]);
+
+  const handleDialogChange = (open: boolean) => {
+    if (!open) {
+      reset();
+      closeEventModal();
+    }
+  };
+
   function handleCreateNewAppointment(values: NewAppointmentFormData) {
     const start = dayjs(`${values.date}T${values.startTime}`);
     const durationHours = parseFloat(values.duration);
@@ -81,16 +106,18 @@ export function NewAppointmentModal() {
       notes: values.notes || undefined,
     };
 
+    addEvent(newAppointment);
+
     setAppointment({
       doctorId: '',
       doctorName: values.doctor || '',
       date: values.date,
-      time: values.startTime,
+      time: start.format('HH:mm'),
       notes: values.notes,
     });
 
-    closeEventModal();
     reset();
+    closeEventModal();
   }
 
   const eventTypes = [
@@ -101,7 +128,7 @@ export function NewAppointmentModal() {
   ];
 
   return (
-    <Dialog open={isEventModalOpen} onOpenChange={closeEventModal}>
+    <Dialog open={isOpen} onOpenChange={handleDialogChange}>
       <DialogContent className="sm:max-w-[500px] bg-[var(--color-surface)] text-[var(--color-text)]">
         <DialogHeader>
           <DialogTitle>New Appointment</DialogTitle>
@@ -166,7 +193,9 @@ export function NewAppointmentModal() {
               <Label>Event Type *</Label>
               <Select
                 value={watch('eventType')}
-                onValueChange={v => setValue('eventType', v as any)}
+                onValueChange={v =>
+                  setValue('eventType', v as NewAppointmentFormData['eventType'])
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select type" />
@@ -211,7 +240,11 @@ export function NewAppointmentModal() {
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={closeEventModal}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleDialogChange(false)}
+            >
               Cancel
             </Button>
             <Button

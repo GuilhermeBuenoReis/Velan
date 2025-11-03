@@ -1,11 +1,10 @@
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 import { useCalendar } from '../context/calendar-context';
-import type { CalendarEvent } from '../types/event';
 import { EventCard } from './event-card';
 
 const HOURS = Array.from({ length: 14 }, (_, i) => i + 7);
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
 
 export function WeekView() {
   const { currentDate, events, openEventModal } = useCalendar();
@@ -49,7 +48,7 @@ export function WeekView() {
   }, [currentTime, weekDates]);
 
   return (
-    <div className="flex-1 overflow-auto bg-[var(--color-surface)]">
+    <div className="w-full overflow-auto bg-[var(--color-surface)]">
       <div className="min-w-[800px]">
         <div className="sticky top-0 z-[5] bg-[var(--color-surface)] border-b border-[var(--color-border)] grid grid-cols-[80px_repeat(7,1fr)]">
           <div className="border-r border-[var(--color-border)] p-3 text-xs text-[var(--color-muted)]">
@@ -62,9 +61,7 @@ export function WeekView() {
                 index === 6 ? 'border-r-0' : ''
               }`}
             >
-              <div className="text-xs text-[var(--color-muted)]">
-                {DAYS[index]}
-              </div>
+              <div className="text-xs text-zinc-500">{DAYS[index]}</div>
               <div
                 className={`inline-flex items-center justify-center w-8 h-8 mt-1 rounded-full transition ${
                   isToday(date)
@@ -106,7 +103,7 @@ export function WeekView() {
               className="grid grid-cols-[80px_repeat(7,1fr)] border-b border-[var(--color-border)]"
               style={{ minHeight: '80px' }}
             >
-              <div className="border-r border-[var(--color-border)] p-2 text-xs text-[var(--color-muted)] text-right pr-3">
+              <div className="border-r border-[var(--color-border)] p-2 text-xs text-gray-950 text-right pr-3">
                 {formatTime(hour)}
               </div>
 
@@ -130,7 +127,7 @@ export function WeekView() {
                         <button
                           key={event.id}
                           type="button"
-                          onClick={() => openEventModal(event)}
+                          onClick={() => openEventModal({ event })}
                           className="absolute left-2 right-2 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] rounded-md transition outline-none"
                           style={{
                             top: `${topOffset}px`,

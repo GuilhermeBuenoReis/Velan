@@ -17,7 +17,7 @@ export function EventCard({ event }: { event: CalendarEvent }) {
     <motion.div
       whileHover={{ scale: 1.02, y: -2 }}
       transition={{ duration: 0.2 }}
-      onClick={() => openEventModal(event)}
+      onClick={() => openEventModal({ event })}
       className={`${colorClass} border rounded-lg p-2 cursor-pointer shadow-sm hover:shadow-md transition-shadow h-full overflow-hidden`}
     >
       <div className="text-xs opacity-90">{event.time}</div>

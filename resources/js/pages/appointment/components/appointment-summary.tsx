@@ -1,10 +1,11 @@
+import dayjs from 'dayjs';
+import 'dayjs/locale/pt-br';
 import {
   Calendar as CalendarIcon,
   CheckCircle2,
   Clock,
   MapPin,
   UserCircle2,
-  Video,
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -13,45 +14,31 @@ import { useChatAssistant } from '../context/chat-assistant-context';
 import { DOCTORS } from '../data/index';
 import { InfoRow } from './info-row';
 
-export interface Appointment {
-  id: string;
-  patient: string;
-  doctor: string;
-  specialty: string;
-  date: string;
-  time: string;
-  endTime: string;
-  type: 'Presencial' | 'Online';
-  status: 'Confirmada' | 'Pendente' | 'Cancelada';
-  notes?: string;
-}
-
 export function AppointmentSummary() {
-  const { onSubmitCurrentStep } = useChatAssistant();
-
-  const appointment: Appointment = {
-    id: '1',
-    patient: 'Carlos Eduardo',
-    doctor: 'Dr. João Silva',
-    specialty: 'Cardiologista',
-    date: '2025-10-30',
-    time: '10:00 AM',
-    endTime: '11:00 AM',
-    type: 'Online',
-    status: 'Pendente',
-    notes: 'Consulta para acompanhamento de rotina',
-  };
-
-  const doctor = DOCTORS.find(d => d.name === appointment.doctor);
-  const initials = appointment.doctor
+  const { appointment, onSubmitCurrentStep } = useChatAssistant();
+  const doctor =
+    DOCTORS.find(
+      d => d.id === appointment.doctorId || d.name === appointment.doctorName
+    ) ?? null;
+  const doctorName =
+    appointment.doctorName || doctor?.name || 'Profissional a definir';
+  const initials = doctorName
     .split(' ')
     .map(word => word[0])
     .join('')
     .slice(0, 2)
     .toUpperCase();
+  const specialty = doctor?.specialty ?? 'Especialidade não informada';
+  const formattedDate = appointment.date
+    ? dayjs(appointment.date).locale('pt-br').format('DD [de] MMMM [de] YYYY')
+    : 'Data não selecionada';
+  const formattedTime = appointment.time || 'Horário não selecionado';
+  const primaryLocation =
+    doctor?.locations?.[0]?.name ?? 'Local a definir com a equipe';
+  const notes = appointment.notes?.trim();
 
   const handleConfirm = () => {
-    onSubmitCurrentStep('success', undefined);
+    onSubmitCurrentStep('confirmation');
   };
 
   return (
@@ -68,7 +55,7 @@ export function AppointmentSummary() {
     >
       <div className="flex items-center gap-3">
         <Avatar className="h-12 w-12">
-          <AvatarImage src={doctor?.avatar} alt={appointment.doctor} />
+          <AvatarImage src={doctor?.avatar} alt={doctorName} />
           <AvatarFallback
             className="text-white"
             style={{
@@ -80,43 +67,26 @@ export function AppointmentSummary() {
           </AvatarFallback>
         </Avatar>
         <div>
-          <div className="text-sm text-[var(--color-text)]">
-            {appointment.doctor}
-          </div>
+          <div className="text-sm text-[var(--color-text)]">{doctorName}</div>
           <div className="text-xs text-[var(--color-text-secondary)]">
-            {appointment.specialty}
+            {specialty}
           </div>
         </div>
       </div>
 
       <div className="space-y-2 border-t border-[color:var(--color-primary)]/30 pt-2">
-        <InfoRow
-          icon={CalendarIcon}
-          text={new Date(appointment.date).toDateString()}
-        />
-        <InfoRow
-          icon={Clock}
-          text={`${appointment.time} - ${appointment.endTime}`}
-        />
-        <InfoRow
-          icon={appointment.type === 'Online' ? Video : MapPin}
-          text={
-            appointment.type === 'Online'
-              ? 'Online Consultation'
-              : 'Medical Center - Main Building'
-          }
-        />
-        <InfoRow icon={UserCircle2} text={`Status: ${appointment.status}`} />
+        <InfoRow icon={CalendarIcon} text={formattedDate} />
+        <InfoRow icon={Clock} text={formattedTime} />
+        <InfoRow icon={MapPin} text={primaryLocation} />
+        <InfoRow icon={UserCircle2} text="Status: Pendente" />
       </div>
 
-      {appointment.notes && (
+      {notes && (
         <div className="border-t border-[color:var(--color-primary)]/30 pt-2">
           <div className="text-xs text-[var(--color-text-secondary)]">
             Notes:
           </div>
-          <div className="mt-1 text-xs text-[var(--color-text)]">
-            {appointment.notes}
-          </div>
+          <div className="mt-1 text-xs text-[var(--color-text)]">{notes}</div>
         </div>
       )}
 

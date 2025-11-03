@@ -5,7 +5,8 @@ import { useCalendar } from '../context/calendar-context';
 const weekDays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
 
 export function YearView() {
-  const { currentDate, events, setView, setSelectedEvent } = useCalendar();
+  const { currentDate, events, setView, setSelectedEvent, setDate } =
+    useCalendar();
   const year = currentDate.year();
   const months = Array.from({ length: 12 }, (_, i) =>
     dayjs().month(i).locale('pt-br').format('MMMM')
@@ -34,13 +35,14 @@ export function YearView() {
   };
 
   const handleMonthClick = (monthIndex: number) => {
-    setView('month');
-    const selectedMonth = currentDate.month(monthIndex);
+    const selectedMonth = currentDate.month(monthIndex).startOf('month');
+    setDate(selectedMonth);
     setSelectedEvent(null);
+    setView('month');
   };
 
   return (
-    <div className="flex-1 overflow-auto bg-[var(--color-surface)] p-6">
+    <div className="w-full overflow-auto bg-[var(--color-surface)] p-6">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {months.map((month, monthIndex) => {

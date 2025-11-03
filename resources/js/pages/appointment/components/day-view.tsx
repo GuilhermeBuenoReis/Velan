@@ -36,7 +36,7 @@ export function DayView() {
   const currentDayNumber = currentDate.date();
 
   return (
-    <div className="flex-1 overflow-auto bg-[var(--color-surface)]">
+    <div className="w-full overflow-auto bg-[var(--color-surface)]">
       <div className="max-w-4xl mx-auto">
         <div className="sticky top-0 z-[5] bg-[var(--color-surface)] border-b border-[var(--color-border)] px-6 py-4">
           <div className="text-center">
@@ -75,7 +75,7 @@ export function DayView() {
                       <button
                         key={event.id}
                         type="button"
-                        onClick={() => openEventModal(event)}
+                        onClick={() => openEventModal({ event })}
                         className="absolute left-3 right-3 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] rounded-md transition outline-none"
                         style={{
                           top: `${topOffset}px`,
