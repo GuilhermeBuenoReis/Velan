@@ -1,12 +1,17 @@
 import { AnimatePresence } from 'motion/react';
-import { useEffect } from 'react';
+import chatIcon from '@/assets/chat-icon.png';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useChatAssistant } from '../context/chat-assistant-context';
 import { DOCTORS, TIME_SLOTS } from '../data/index';
 import { AppointmentSummary } from './appointment-summary';
-import { ChatHeader } from './chat-header';
 import { ChatInput } from './chat-input';
 import { ChatMessage } from './chat-message';
 import { DoctorOption } from './doctor-option';
@@ -14,35 +19,37 @@ import { TimeOption } from './time-option';
 import { TypingIndicator } from './typing-indicator';
 
 export function ChatAssistantModal() {
-  const {
-    isOpen,
-    onCloseChatModal,
-    messages,
-    isTyping,
-    currentStep,
-    setStep,
-    addBotMessage,
-    clearMessages,
-  } = useChatAssistant();
-
-  useEffect(() => {
-    if (!isOpen) return;
-    clearMessages();
-    setStep('greeting');
-    const timer = window.setTimeout(() => addBotMessage('greeting'), 400);
-
-    return () => window.clearTimeout(timer);
-  }, [addBotMessage, clearMessages, isOpen, setStep]);
+  const { isOpen, onCloseChatModal, isTyping, currentStep, setStep } =
+    useChatAssistant();
 
   return (
     <Dialog
       open={isOpen}
-      onOpenChange={isOpen => {
-        if (!isOpen) onCloseChatModal();
+      onOpenChange={open => {
+        if (!open) onCloseChatModal();
       }}
     >
       <DialogContent className="sm:max-w-[550px] p-0 gap-0 overflow-hidden">
-        <ChatHeader />
+        <DialogHeader
+          className="
+          w-full flex justify-center gap-3 px-4 py-3 border-b border-white/10 bg-gradient-to-r from-[#1E1B4B]/90 via-[#312E81]/80 to-[#0F172A]/90
+          backdrop-blur-xl"
+        >
+          <DialogTitle className="flex items-center gap-3 m-0 p-0">
+            <Avatar className="h-12 w-12 border-2 border-white/30 shadow-sm">
+              <AvatarImage src={chatIcon} alt="Imagem do chat icon" />
+            </Avatar>
+
+            <div className="flex flex-col">
+              <span className="text-lg font-semibold text-white">
+                Assistente de Agendamento
+              </span>
+              <span className="text-sm text-white">
+                Vamos agendar sua próxima consulta passo a passo
+              </span>
+            </div>
+          </DialogTitle>
+        </DialogHeader>
 
         <ScrollArea
           className="h-[450px] bg-[var(--color-surface-muted)] px-4 py-3 space-y-4"
@@ -65,7 +72,7 @@ export function ChatAssistantModal() {
                     'linear-gradient(135deg, var(--color-secondary), var(--color-primary))',
                 }}
               >
-                Yes, let’s get started!
+                Vamos começar
               </Button>
             </div>
           )}

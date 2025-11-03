@@ -9,7 +9,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { AppLayout } from '@/layouts/app-layout';
-
 import { appointment } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
 import { CalendarHeader } from './components/calendar-header';
@@ -37,6 +36,10 @@ function FloatingActions() {
   const { openEventModal } = useCalendar();
   const { openChat } = useChatAssistant();
 
+  const handleOpenAssistant = () => {
+    openChat();
+  };
+
   return (
     <div className="fixed bottom-8 right-8 z-20 flex flex-col gap-3">
       <motion.div
@@ -46,7 +49,8 @@ function FloatingActions() {
       >
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Button
-            onClick={openChat}
+            type="button"
+            onClick={handleOpenAssistant}
             className="h-14 w-14 rounded-full bg-gradient-to-br from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 shadow-lg hover:shadow-xl transition-shadow relative group"
             size="icon"
           >
@@ -71,6 +75,7 @@ function FloatingActions() {
           <DropdownMenuTrigger asChild>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
+                type="button"
                 className="h-14 w-14 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transition-shadow group"
                 size="icon"
               >
@@ -82,9 +87,15 @@ function FloatingActions() {
             </motion.div>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuItem onClick={openChat}>
-              <MessageSquare className="h-4 w-4 mr-2" />
-              Agendar com Assistente
+            <DropdownMenuItem onClick={handleOpenAssistant}>
+              <Button
+                onClick={openChat}
+                className="h-14 w-14 rounded-full bg-gradient-to-br from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 shadow-lg hover:shadow-xl transition-shadow relative group"
+                size="icon"
+                type="button"
+              >
+                <MessageSquare className="h-6 w-6" />
+              </Button>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => openEventModal()}>
               <Plus className="h-4 w-4 mr-2" />
@@ -118,7 +129,6 @@ export function Appointment() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Consultas" />
-
       <ChatAssistantProvider>
         <CalendarProvider>
           <main className="w-full min-h-screen flex flex-col text-gray-200">
