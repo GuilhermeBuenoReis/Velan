@@ -12,11 +12,7 @@ export function AppContent({
   ...props
 }: AppContentProps) {
   if (variant === 'sidebar') {
-    return (
-      <SidebarAppContent {...props}>
-        {children}
-      </SidebarAppContent>
-    );
+    return <SidebarAppContent {...props}>{children}</SidebarAppContent>;
   }
 
   return (

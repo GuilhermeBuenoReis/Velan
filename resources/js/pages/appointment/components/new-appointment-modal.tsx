@@ -22,7 +22,6 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useCalendar } from '../context/calendar-context';
-import { useChatAssistant } from '../context/chat-assistant-context';
 import type { CalendarEvent } from '../types/event';
 
 const newAppointmentSchema = z.object({
@@ -46,7 +45,6 @@ export function NewAppointmentModal() {
     addEvent,
     draftEventDate,
   } = useCalendar();
-  const { setAppointment } = useChatAssistant();
   const isOpen = isEventModalOpen && !selectedEvent;
 
   const {
@@ -107,14 +105,6 @@ export function NewAppointmentModal() {
     };
 
     addEvent(newAppointment);
-
-    setAppointment({
-      doctorId: '',
-      doctorName: values.doctor || '',
-      date: values.date,
-      time: start.format('HH:mm'),
-      notes: values.notes,
-    });
 
     reset();
     closeEventModal();
@@ -194,7 +184,10 @@ export function NewAppointmentModal() {
               <Select
                 value={watch('eventType')}
                 onValueChange={v =>
-                  setValue('eventType', v as NewAppointmentFormData['eventType'])
+                  setValue(
+                    'eventType',
+                    v as NewAppointmentFormData['eventType']
+                  )
                 }
               >
                 <SelectTrigger>

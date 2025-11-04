@@ -1,14 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
-import {
-  Calendar,
-  FileText,
-  Heart,
-  Home,
-  MessageSquare,
-  Settings,
-  Users,
-} from 'lucide-react';
+import { Calendar, Home, Settings } from 'lucide-react';
 import { type CSSProperties, useEffect, useMemo, useState } from 'react';
+import appLogo from '@/assets/Velan-logo.png';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -35,10 +28,7 @@ import { AppDropdownMenuProfile } from './app-dropdown-menu-profile';
 const navItems = [
   { icon: Home, label: 'Início', href: dashboard().url },
   { icon: Calendar, label: 'Consultas', href: appointment().url },
-  { icon: Users, label: 'Meus Médicos', href: '/medicos' },
-  { icon: FileText, label: 'Resultados e Exames', href: '/exames' },
-  { icon: Heart, label: 'Saúde & Hábitos', href: '/habitos' },
-  { icon: MessageSquare, label: 'Mensagens', href: '/mensagens' },
+
   { icon: Settings, label: 'Configurações', href: profileEditRoute().url },
 ] as const;
 
@@ -100,9 +90,11 @@ export function AppSidebar() {
       <SidebarHeader className="px-4 pb-3 pt-6">
         <div className="flex w-full items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-[16px] bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] shadow-[0_0_18px_rgba(107,95,209,0.28)]">
-              <Heart className="h-5 w-5 text-white" />
-            </div>
+            <img
+              src={appLogo}
+              alt="logo velan"
+              className="rounded-full h-11 w-11"
+            />
             {!isCollapsed && (
               <span className="text-lg font-semibold tracking-tight text-foreground transition-opacity duration-200">
                 Velan
@@ -116,7 +108,7 @@ export function AppSidebar() {
         <Separator className="my-2 bg-sidebar-border/70" />
       </div>
 
-      <SidebarContent className="flex-1 overflow-hidden px-3 pb-6 flex items-center">
+      <SidebarContent className="flex-1 overflow-hidden px-3 pb-6 flex">
         <ScrollArea className="h-full pr-1">
           <SidebarMenu className="space-y-1">
             {navItems.map(item => {
