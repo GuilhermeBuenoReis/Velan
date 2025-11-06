@@ -80,6 +80,19 @@ export function Profile({
                   <InputError className="mt-2" message={errors.email} />
                 </div>
 
+                <div className="grid gap-2">
+                  <Label htmlFor="type">User type</Label>
+
+                  <Input
+                    className="mt-1 block w-full"
+                    defaultValue={auth.user.type ?? ''}
+                    name="type"
+                    placeholder="e.g., Specialist clinic"
+                  />
+
+                  <InputError className="mt-2" message={errors.type} />
+                </div>
+
                 {mustVerifyEmail && auth.user.email_verified_at === null && (
                   <div>
                     <p className="-mt-4 text-sm text-muted-foreground">

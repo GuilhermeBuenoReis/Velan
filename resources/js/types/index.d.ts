@@ -35,6 +35,9 @@ export interface User {
   name: string;
   email: string;
   avatar?: string;
+  phone?: string | null;
+  role?: 'patient' | 'doctor' | 'clinic';
+  type?: string | null;
   email_verified_at: string | null;
   two_factor_enabled?: boolean;
   created_at: string;

@@ -38,6 +38,10 @@ const registerSchema = z
       .string({ required_error: 'Informe seu telefone.' })
       .min(1, 'Informe seu telefone.')
       .max(20, 'O telefone deve ter no máximo 20 caracteres.'),
+    type: z
+      .string({ required_error: 'Informe o tipo de usuário.' })
+      .min(1, 'Informe o tipo de usuário.')
+      .max(255, 'O tipo de usuário deve ter no máximo 255 caracteres.'),
     role: z.enum(['patient', 'doctor', 'clinic'], {
       required_error: 'Selecione o perfil de uso.',
       invalid_type_error: 'Selecione o perfil de uso.',
@@ -93,6 +97,7 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
       name: '',
       email: '',
       phone: '',
+      type: '',
       role: 'patient',
       password: '',
       confirmPassword: '',
@@ -142,6 +147,7 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
       'name',
       'email',
       'phone',
+      'type',
       'role',
       'password',
       'confirmPassword',
@@ -163,6 +169,7 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
           name: data.name,
           email: data.email,
           phone: data.phone,
+          type: data.type,
           role: data.role,
           password: data.password,
           password_confirmation: data.confirmPassword,
@@ -203,6 +210,7 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
                 name: '',
                 email: '',
                 phone: '',
+                type: '',
                 role: 'patient',
                 password: '',
                 confirmPassword: '',
@@ -276,6 +284,21 @@ export function Register({ onSwitchToLogin }: RegisterProps = {}) {
           />
           {errors.phone && (
             <p className="text-xs text-red-400">{errors.phone.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-3">
+          <Label htmlFor="type" className="text-foreground">
+            Tipo de usuário
+          </Label>
+          <Input
+            type="text"
+            placeholder="Ex.: Clínica especializada"
+            className="h-12 rounded-xl border-[color:var(--border)] bg-[color:var(--surface)]/85 text-foreground placeholder:text-[color:var(--text-secondary)]/70 transition-all focus:border-[color:var(--primary)] focus:ring-2 focus:ring-[color:var(--primary)]/25"
+            {...register('type')}
+          />
+          {errors.type && (
+            <p className="text-xs text-red-400">{errors.type.message}</p>
           )}
         </div>
 
