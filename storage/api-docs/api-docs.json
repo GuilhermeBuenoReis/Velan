@@ -1,0 +1,1259 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Velan API Documentation",
+        "description": "Session-based authentication, settings management, and appointment APIs.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Local development server"
+        }
+    ],
+    "paths": {
+        "/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Authenticate a user",
+                "description": "Authenticates the user using email and password. Requires a valid CSRF token header.",
+                "operationId": "login",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Authenticated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or invalid credentials.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Log out the authenticated user",
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "Logged out successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "SanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register a new user",
+                "description": "Registers a new user and starts an authenticated session.",
+                "operationId": "register",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Account created successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/forgot-password": {
+            "post": {
+                "tags": [
+                    "Password Reset"
+                ],
+                "summary": "Request a password reset link",
+                "operationId": "requestPasswordResetLink",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ForgotPasswordRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password reset email dispatched if the account exists.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/reset-password": {
+            "post": {
+                "tags": [
+                    "Password Reset"
+                ],
+                "summary": "Reset the user's password",
+                "operationId": "resetPassword",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResetPasswordRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password reset successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/verify-email": {
+            "get": {
+                "tags": [
+                    "Email Verification"
+                ],
+                "summary": "Show the email verification prompt",
+                "operationId": "emailVerificationPrompt",
+                "responses": {
+                    "200": {
+                        "description": "Email verification prompt returned.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "SanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/verify-email/{id}/{hash}": {
+            "get": {
+                "tags": [
+                    "Email Verification"
+                ],
+                "summary": "Verify the authenticated user's email address",
+                "operationId": "verifyEmail",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User identifier.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    },
+                    {
+                        "name": "hash",
+                        "in": "path",
+                        "description": "Email verification hash.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "f8e4f8e4f8e4f8e4f8e4f8e4f8e4f8e4f8e4f8e4f8e4f8e4f8e4f8e4f8e4"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email verified successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Invalid or expired verification link.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "SanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/email/verification-notification": {
+            "post": {
+                "tags": [
+                    "Email Verification"
+                ],
+                "summary": "Resend the email verification link",
+                "operationId": "resendVerificationEmail",
+                "responses": {
+                    "200": {
+                        "description": "Verification link re-sent.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "SanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/settings/profile": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Show the profile settings page",
+                "operationId": "viewProfileSettings",
+                "responses": {
+                    "200": {
+                        "description": "Profile settings data returned.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "SanctumSession": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Delete the authenticated user's account",
+                "operationId": "deleteAccount",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AccountDeletionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Account removed successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error (incorrect password).",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "SanctumSession": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Update the authenticated user's profile",
+                "operationId": "updateProfile",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProfileUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile updated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "SanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/settings/password": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Show the password settings page",
+                "operationId": "viewPasswordSettings",
+                "responses": {
+                    "200": {
+                        "description": "Password settings data returned.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "SanctumSession": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Update the authenticated user's password",
+                "operationId": "updatePassword",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PasswordUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "SanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/settings/appearance": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Show the appearance settings page",
+                "operationId": "viewAppearanceSettings",
+                "responses": {
+                    "200": {
+                        "description": "Appearance settings data returned.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "SanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/settings/two-factor": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Show the two-factor authentication settings page",
+                "description": "Returns the two-factor settings page when two-factor authentication is enabled.",
+                "operationId": "viewTwoFactorSettings",
+                "responses": {
+                    "200": {
+                        "description": "Two-factor settings data returned.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Two-factor authentication is disabled.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "SanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/appointments": {
+            "get": {
+                "tags": [
+                    "Appointments"
+                ],
+                "summary": "List appointments",
+                "description": "Returns appointments visible to the authenticated user. Optional filters limit the result set.",
+                "operationId": "listAppointments",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "Filter appointments by user id.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    },
+                    {
+                        "name": "view",
+                        "in": "query",
+                        "description": "Sets the granularity of the period filter.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "month",
+                                "week",
+                                "day"
+                            ],
+                            "example": "month"
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Year portion when filtering by period.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2024
+                        }
+                    },
+                    {
+                        "name": "month",
+                        "in": "query",
+                        "description": "Month number (1-12). Only used when `view=month`.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 12,
+                            "minimum": 1,
+                            "example": 8
+                        }
+                    },
+                    {
+                        "name": "week",
+                        "in": "query",
+                        "description": "Week number (1-53). Only used when `view=week`.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 53,
+                            "minimum": 1,
+                            "example": 31
+                        }
+                    },
+                    {
+                        "name": "day",
+                        "in": "query",
+                        "description": "Specific date (YYYY-MM-DD). Only used when `view=day`.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2024-08-01"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of appointments",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Appointment"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "SanctumSession": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Appointments"
+                ],
+                "summary": "Create an appointment",
+                "description": "Creates an appointment for the given user.",
+                "operationId": "createAppointment",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AppointmentCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Appointment created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Appointment"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "SanctumSession": []
+                    }
+                ]
+            }
+        },
+        "/api/appointments/{id}": {
+            "get": {
+                "tags": [
+                    "Appointments"
+                ],
+                "summary": "Get appointment details",
+                "operationId": "getAppointment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Appointment identifier.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Appointment details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Appointment"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Appointment not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "SanctumSession": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Appointments"
+                ],
+                "summary": "Update an appointment",
+                "description": "Updates appointment fields. Fields not supplied remain unchanged.",
+                "operationId": "updateAppointment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Appointment identifier.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AppointmentUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Appointment updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Appointment"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Appointment not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "SanctumSession": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Appointments"
+                ],
+                "summary": "Delete an appointment",
+                "description": "Removes the appointment with the given identifier.",
+                "operationId": "deleteAppointment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Appointment identifier.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Appointment deleted successfully"
+                    },
+                    "404": {
+                        "description": "Appointment not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "SanctumSession": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ApiMessage": {
+                "required": [
+                    "message"
+                ],
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Operation completed."
+                    }
+                },
+                "type": "object"
+            },
+            "LoginRequest": {
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "secret"
+                    },
+                    "remember": {
+                        "type": "boolean",
+                        "example": true,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "RegisterRequest": {
+                "required": [
+                    "name",
+                    "email",
+                    "phone",
+                    "role",
+                    "type",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Patient Example"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "patient@example.com"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "+55 11 99999-0000"
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "patient",
+                            "doctor",
+                            "clinic"
+                        ],
+                        "example": "patient"
+                    },
+                    "type": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "premium"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "secret-password"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "secret-password"
+                    }
+                },
+                "type": "object"
+            },
+            "ForgotPasswordRequest": {
+                "required": [
+                    "email"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "patient@example.com"
+                    }
+                },
+                "type": "object"
+            },
+            "ResetPasswordRequest": {
+                "required": [
+                    "token",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "example": "abcdef"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "patient@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "new-secret"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "new-secret"
+                    }
+                },
+                "type": "object"
+            },
+            "ProfileUpdateRequest": {
+                "required": [
+                    "name",
+                    "email"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Patient Example"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "patient@example.com"
+                    },
+                    "type": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "premium",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AccountDeletionRequest": {
+                "required": [
+                    "password"
+                ],
+                "properties": {
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "current-password"
+                    }
+                },
+                "type": "object"
+            },
+            "PasswordUpdateRequest": {
+                "required": [
+                    "current_password",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "current_password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "current-password"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "new-secret"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "new-secret"
+                    }
+                },
+                "type": "object"
+            },
+            "Appointment": {
+                "required": [
+                    "id",
+                    "user_id",
+                    "title",
+                    "date",
+                    "start_time",
+                    "duration",
+                    "event_type"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Initial Consultation"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-08-01"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "pattern": "^\\\\d{2}:\\\\d{2}$",
+                        "example": "14:30"
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "example": 45
+                    },
+                    "event_type": {
+                        "type": "string",
+                        "example": "consultation"
+                    },
+                    "location": {
+                        "type": "string",
+                        "example": "Clinic A - Room 3",
+                        "nullable": true
+                    },
+                    "doctor": {
+                        "type": "string",
+                        "example": "Dr. Jane Doe",
+                        "nullable": true
+                    },
+                    "notes": {
+                        "type": "string",
+                        "example": "Bring previous exams.",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AppointmentCreateRequest": {
+                "required": [
+                    "user_id",
+                    "title",
+                    "date",
+                    "start_time",
+                    "duration",
+                    "event_type"
+                ],
+                "properties": {
+                    "user_id": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Initial Consultation"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-08-01"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "pattern": "^\\\\d{2}:\\\\d{2}$",
+                        "example": "14:30"
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "example": 45
+                    },
+                    "event_type": {
+                        "type": "string",
+                        "maxLength": 100,
+                        "example": "consultation"
+                    },
+                    "location": {
+                        "type": "string",
+                        "example": "Clinic A - Room 3",
+                        "nullable": true
+                    },
+                    "doctor": {
+                        "type": "string",
+                        "example": "Dr. Jane Doe",
+                        "nullable": true
+                    },
+                    "notes": {
+                        "type": "string",
+                        "example": "Bring previous exams.",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AppointmentUpdateRequest": {
+                "description": "Provide only fields that need to be updated.",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Initial Consultation (updated)"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-08-02"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "pattern": "^\\\\d{2}:\\\\d{2}$",
+                        "example": "15:00"
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "example": 60
+                    },
+                    "event_type": {
+                        "type": "string",
+                        "maxLength": 100,
+                        "example": "follow-up"
+                    },
+                    "location": {
+                        "type": "string",
+                        "example": "Clinic A - Room 5",
+                        "nullable": true
+                    },
+                    "doctor": {
+                        "type": "string",
+                        "example": "Dr. Jane Doe",
+                        "nullable": true
+                    },
+                    "notes": {
+                        "type": "string",
+                        "example": "Patient requested extra time.",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "SanctumSession": {
+                "type": "apiKey",
+                "description": "Session cookie issued by Sanctum when authenticating via web guards.",
+                "name": "laravel_session",
+                "in": "cookie"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Register, log in, and manage session-based authentication."
+        },
+        {
+            "name": "Password Reset",
+            "description": "Request and apply password reset links."
+        },
+        {
+            "name": "Email Verification",
+            "description": "Endpoints for verifying and resending verification emails."
+        },
+        {
+            "name": "Settings",
+            "description": "Authenticated endpoints for managing profile, password, and preferences."
+        },
+        {
+            "name": "Appointments",
+            "description": "CRUD operations for appointments."
+        }
+    ]
+}

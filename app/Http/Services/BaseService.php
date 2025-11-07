@@ -3,7 +3,7 @@
 namespace App\Http\Services;
 
 use App\Http\Repositories\BaseRepository;
-use App\Interfaces\Service;
+use App\Interface\Service;
 
 abstract class BaseService implements Service
 {
