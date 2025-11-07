@@ -2,6 +2,7 @@ import { Calendar, Clock, FileText, MapPin, User } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -41,6 +42,9 @@ export function EventDetailsModal() {
             <DialogTitle className={textColorClass}>
               {selectedEvent.title}
             </DialogTitle>
+            <DialogDescription className={`${textColorClass} opacity-80`}>
+              Detalhes completos do evento selecionado.
+            </DialogDescription>
           </div>
         </DialogHeader>
 

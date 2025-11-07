@@ -1,13 +1,17 @@
+import { router, usePage } from '@inertiajs/react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
-import { useUrlState } from '@/hooks/use-url-state';
+import { appointment as appointmentRoute } from '@/routes';
+import type { SharedData } from '@/types';
+import type { AppointmentDto } from '../types/appointment';
 import type { CalendarEvent } from '../types/event';
 
 dayjs.locale('pt-br');
@@ -28,9 +32,8 @@ interface CalendarContextType {
   goToday: () => void;
   setView: (value: CalendarView) => void;
   events: CalendarEvent[];
-  addEvent: (event: Omit<CalendarEvent, 'id'>) => void;
-  updateEvent: (id: string, updated: Partial<CalendarEvent>) => void;
-  deleteEvent: (id: string) => void;
+  isLoading: boolean;
+  refreshAppointments: () => void;
   selectedEvent: CalendarEvent | null;
   setSelectedEvent: (event: CalendarEvent | null) => void;
   draftEventDate: string | null;
@@ -40,6 +43,14 @@ interface CalendarContextType {
   weekDaysShort: string[];
   weekDaysFull: string[];
 }
+
+type AppointmentPageProps = SharedData & {
+  appointments?: AppointmentDto[];
+  filters?: {
+    date?: string;
+    view?: CalendarView;
+  };
+};
 
 const WEEK_DAYS_PT_SHORT = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 const WEEK_DAYS_PT_FULL = [
@@ -52,71 +63,150 @@ const WEEK_DAYS_PT_FULL = [
   'Sábado',
 ];
 
+const DEFAULT_VIEW: CalendarView = 'month';
+
 const CalendarContext = createContext<CalendarContextType | null>(null);
 
+const mapAppointmentToEvent = (appointment: AppointmentDto): CalendarEvent => {
+  const start = dayjs(`${appointment.date} ${appointment.start_time}`);
+  const durationMinutes = Number(appointment.duration) || 60;
+  const end = start.add(durationMinutes, 'minute');
+
+  return {
+    id: String(appointment.id),
+    title: appointment.title,
+    date: appointment.date,
+    time: `${start.format('HH:mm')} - ${end.format('HH:mm')}`,
+    startHour: start.hour(),
+    startMinute: start.minute(),
+    durationHours: Math.max(durationMinutes / 60, 0.5),
+    color: appointment.event_type,
+    location: appointment.location ?? undefined,
+    doctor: appointment.doctor ?? undefined,
+    notes: appointment.notes ?? undefined,
+  };
+};
+
 export function CalendarProvider({ children }: { children: React.ReactNode }) {
-  const [dateValue, setDateValue] = useUrlState('date', dayjs().format());
-  const [viewValue, setViewValue] = useUrlState('view', 'month');
+  const page = usePage<AppointmentPageProps>();
+  const filters = page.props.filters ?? {
+    date: dayjs().format('YYYY-MM-DD'),
+    view: DEFAULT_VIEW,
+  };
+  const appointments = page.props.appointments ?? [];
+
+  const [optimisticFilters, setOptimisticFilters] = useState<{
+    date?: string;
+    view?: CalendarView;
+  } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
     null
   );
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [draftEventDate, setDraftEventDate] = useState<string | null>(null);
 
-  const currentDate = dayjs(dateValue);
+  useEffect(() => {
+    setOptimisticFilters(null);
+  }, [filters.date, filters.view]);
 
-  const currentView: CalendarView = ['day', 'week', 'month', 'year'].includes(
-    viewValue
-  )
-    ? (viewValue as CalendarView)
-    : 'month';
+  const resolvedDate =
+    optimisticFilters?.date ?? filters.date ?? dayjs().format('YYYY-MM-DD');
+  const resolvedView =
+    optimisticFilters?.view ??
+    (filters.view && ['day', 'week', 'month', 'year'].includes(filters.view)
+      ? (filters.view as CalendarView)
+      : DEFAULT_VIEW);
+
+  const currentDate = useMemo(() => dayjs(resolvedDate), [resolvedDate]);
+  const currentView = resolvedView;
+
+  const events = useMemo(() => {
+    return [...appointments.map(mapAppointmentToEvent)].sort((a, b) => {
+      const dateDiff = dayjs(a.date).diff(dayjs(b.date));
+      if (dateDiff !== 0) {
+        return dateDiff;
+      }
+
+      if (a.startHour !== b.startHour) {
+        return a.startHour - b.startHour;
+      }
+
+      return a.startMinute - b.startMinute;
+    });
+  }, [appointments]);
+
+  const requestAppointments = useCallback(
+    (target: { date?: dayjs.Dayjs; view?: CalendarView }, options?: { preserveScroll?: boolean }) => {
+      const nextDate = target.date ?? currentDate;
+      const nextView = target.view ?? currentView;
+      const formattedDate = nextDate.format('YYYY-MM-DD');
+
+      setIsLoading(true);
+      setOptimisticFilters({ date: formattedDate, view: nextView });
+
+      router.get(
+        appointmentRoute.url({
+          query: {
+            date: formattedDate,
+            view: nextView,
+          },
+        }),
+        {},
+        {
+          preserveState: true,
+          preserveScroll: options?.preserveScroll ?? true,
+          only: ['appointments', 'filters'],
+          onSuccess: () => setOptimisticFilters(null),
+          onError: () => setOptimisticFilters(null),
+          onFinish: () => setIsLoading(false),
+        }
+      );
+    },
+    [currentDate, currentView]
+  );
+
+  const refreshAppointments = useCallback(() => {
+    setIsLoading(true);
+    router.reload({
+      only: ['appointments', 'filters'],
+      onSuccess: () => setOptimisticFilters(null),
+      onError: () => setOptimisticFilters(null),
+      onFinish: () => setIsLoading(false),
+    });
+  }, []);
 
   const setDate = useCallback(
     (value: dayjs.Dayjs) => {
-      setDateValue(value.format());
+      if (value.isSame(currentDate, 'day')) {
+        return;
+      }
+      requestAppointments({ date: value });
     },
-    [setDateValue]
+    [currentDate, requestAppointments]
   );
 
   const goNext = useCallback(() => {
-    const nextDate = currentDate.add(1, currentView);
-    setDateValue(nextDate.format());
-  }, [currentDate, currentView, setDateValue]);
+    requestAppointments({ date: currentDate.add(1, currentView) });
+  }, [currentDate, currentView, requestAppointments]);
 
   const goPrevious = useCallback(() => {
-    const prevDate = currentDate.subtract(1, currentView);
-    setDateValue(prevDate.format());
-  }, [currentDate, currentView, setDateValue]);
+    requestAppointments({ date: currentDate.subtract(1, currentView) });
+  }, [currentDate, currentView, requestAppointments]);
 
   const goToday = useCallback(() => {
-    setDateValue(dayjs().format());
-  }, [setDateValue]);
+    requestAppointments({ date: dayjs() });
+  }, [requestAppointments]);
 
   const setView = useCallback(
     (value: CalendarView) => {
-      setViewValue(value);
+      if (value === currentView) {
+        return;
+      }
+      requestAppointments({ view: value });
     },
-    [setViewValue]
+    [currentView, requestAppointments]
   );
-
-  const addEvent = useCallback((event: Omit<CalendarEvent, 'id'>) => {
-    const newEvent: CalendarEvent = { id: crypto.randomUUID(), ...event };
-    setEvents(prev => [...prev, newEvent]);
-  }, []);
-
-  const updateEvent = useCallback(
-    (id: string, updated: Partial<CalendarEvent>) => {
-      setEvents(prev =>
-        prev.map(event => (event.id === id ? { ...event, ...updated } : event))
-      );
-    },
-    []
-  );
-
-  const deleteEvent = useCallback((id: string) => {
-    setEvents(prev => prev.filter(event => event.id !== id));
-  }, []);
 
   const openEventModal = useCallback(
     (options: OpenEventModalOptions = {}) => {
@@ -149,9 +239,8 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
       goToday,
       setView,
       events,
-      addEvent,
-      updateEvent,
-      deleteEvent,
+      isLoading,
+      refreshAppointments,
       selectedEvent,
       setSelectedEvent,
       draftEventDate,
@@ -170,9 +259,8 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
       goToday,
       setView,
       events,
-      addEvent,
-      updateEvent,
-      deleteEvent,
+      isLoading,
+      refreshAppointments,
       selectedEvent,
       draftEventDate,
       isEventModalOpen,

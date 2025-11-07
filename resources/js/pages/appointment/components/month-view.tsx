@@ -56,18 +56,28 @@ export function MonthView() {
               const dayEvents = getEventsForDate(day);
 
               return (
-                <button
+                <div
                   key={day.format('YYYY-MM-DD')}
-                  type="button"
-                  onClick={() => handleCreateAppointment(day, !isCurrentMonth)}
-                  disabled={!isCurrentMonth}
                   className={`relative min-h-[120px] p-2 text-left transition-colors ${
                     isCurrentMonth
                       ? 'cursor-pointer bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)]'
                       : 'cursor-default bg-[var(--color-surface-muted)]/70 text-[var(--color-text-secondary)]/60'
-                  } focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]`}
+                  } focus-within:outline-none focus-within:ring-2 focus-within:ring-[var(--color-primary)]`}
                 >
-                  <div className="flex h-full flex-col">
+                  <button
+                    type="button"
+                    onClick={() => handleCreateAppointment(day, !isCurrentMonth)}
+                    disabled={!isCurrentMonth}
+                    className="absolute inset-0 z-[1]"
+                  >
+                    <span className="sr-only">
+                      {isCurrentMonth
+                        ? `Adicionar consulta em ${day.format('DD/MM/YYYY')}`
+                        : 'Dia desabilitado'}
+                    </span>
+                  </button>
+
+                  <div className="flex h-full flex-col relative z-[2] pointer-events-none">
                     <div className="mb-2 flex justify-center">
                       <div
                         className={`flex h-7 w-7 items-center justify-center rounded-full text-sm ${
@@ -80,17 +90,25 @@ export function MonthView() {
                       </div>
                     </div>
 
-                    <div className="mt-1 flex flex-wrap gap-1">
+                    <div className="mt-1 flex flex-wrap gap-1 pointer-events-auto">
                       {dayEvents.slice(0, 3).map(event => (
                         <Tooltip key={event.id}>
                           <TooltipTrigger asChild>
-                            <button
-                              type="button"
+                            <div
+                              role="button"
+                              tabIndex={0}
                               onClick={e => {
                                 e.stopPropagation();
                                 openEventModal({ event });
                               }}
-                              className={`h-1.5 flex-1 min-w-[20px] rounded-full transition-opacity hover:opacity-80 ${eventColorClasses[event.color] ?? eventColorClasses.blue}`}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  openEventModal({ event });
+                                }
+                              }}
+                              className={`h-1.5 flex-1 min-w-[20px] rounded-full transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] ${eventColorClasses[event.color] ?? eventColorClasses.blue}`}
                             />
                           </TooltipTrigger>
                           <TooltipContent>
@@ -111,7 +129,7 @@ export function MonthView() {
                       )}
                     </div>
                   </div>
-                </button>
+                </div>
               );
             })}
           </div>

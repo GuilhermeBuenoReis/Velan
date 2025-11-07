@@ -1,6 +1,12 @@
 import type { Dayjs } from 'dayjs';
 import 'dayjs/locale/pt-br';
-import { Calendar, ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import {
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  LoaderCircle,
+  Search,
+} from 'lucide-react';
 import { motion } from 'motion/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,8 +15,15 @@ import type { CalendarView } from '../context/calendar-context';
 import { useCalendar } from '../context/calendar-context';
 
 export function CalendarHeader() {
-  const { currentDate, currentView, goPrevious, goNext, goToday, setView } =
-    useCalendar();
+  const {
+    currentDate,
+    currentView,
+    goPrevious,
+    goNext,
+    goToday,
+    setView,
+    isLoading,
+  } = useCalendar();
 
   const formatDateRangeByView = (date: Dayjs, view: string): string => {
     const dateFormat = date.locale('pt-br');
@@ -72,6 +85,12 @@ export function CalendarHeader() {
         </div>
 
         <div className="flex items-center gap-4">
+          {isLoading && (
+            <div className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)]">
+              <LoaderCircle className="h-4 w-4 animate-spin text-[var(--color-primary)]" />
+              <span>Atualizando...</span>
+            </div>
+          )}
           <Tabs
             value={currentView}
             onValueChange={value => setView(value as CalendarView)}

@@ -36,9 +36,22 @@ class AppointmentRepository extends BaseRepository
         }
 
         return $appointments
-            ->selectRaw('DATE(date) as day')
-            ->groupBy('day')
-            ->orderBy('day')
+            ->select([
+                'id',
+                'user_id',
+                'title',
+                'date',
+                'start_time',
+                'duration',
+                'event_type',
+                'location',
+                'doctor',
+                'notes',
+                'created_at',
+                'updated_at',
+            ])
+            ->orderBy('date')
+            ->orderBy('start_time')
             ->get();
     }
 

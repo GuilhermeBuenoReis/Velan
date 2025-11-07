@@ -1,5 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { usePage } from '@inertiajs/react';
 import dayjs from 'dayjs';
+import { LoaderCircle } from 'lucide-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -7,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -21,8 +24,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import type { SharedData } from '@/types';
 import { useCalendar } from '../context/calendar-context';
-import type { CalendarEvent } from '../types/event';
 
 const newAppointmentSchema = z.object({
   title: z.string().min(1, 'Título é obrigatório'),
@@ -42,10 +45,11 @@ export function NewAppointmentModal() {
     isEventModalOpen,
     closeEventModal,
     selectedEvent,
-    addEvent,
     draftEventDate,
+    refreshAppointments,
   } = useCalendar();
   const isOpen = isEventModalOpen && !selectedEvent;
+  const { auth } = usePage<SharedData>().props;
 
   const {
     register,
@@ -53,14 +57,16 @@ export function NewAppointmentModal() {
     watch,
     setValue,
     reset,
-    formState: { errors },
+    setError,
+    clearErrors,
+    formState: { errors, isSubmitting },
   } = useForm<NewAppointmentFormData>({
     resolver: zodResolver(newAppointmentSchema),
     defaultValues: {
       title: '',
       date: dayjs().format('YYYY-MM-DD'),
       startTime: '09:00',
-      duration: '1',
+      duration: '60',
       eventType: 'blue',
       location: '',
       doctor: '',
@@ -81,33 +87,113 @@ export function NewAppointmentModal() {
   const handleDialogChange = (open: boolean) => {
     if (!open) {
       reset();
+      clearErrors();
       closeEventModal();
     }
   };
 
-  function handleCreateNewAppointment(values: NewAppointmentFormData) {
-    const start = dayjs(`${values.date}T${values.startTime}`);
-    const durationHours = parseFloat(values.duration);
-    const end = start.add(durationHours, 'hour');
-    const [hours, minutes] = values.startTime.split(':').map(Number);
-
-    const newAppointment: Omit<CalendarEvent, 'id'> = {
-      title: values.title,
-      date: values.date,
-      time: `${start.format('HH:mm')} - ${end.format('HH:mm')}`,
-      startHour: hours,
-      startMinute: minutes,
-      durationHours,
-      color: values.eventType,
-      location: values.location || undefined,
-      doctor: values.doctor || undefined,
-      notes: values.notes || undefined,
+  const handleServerErrors = (
+    serverErrors: Record<string, string[] | string>
+  ) => {
+    const fieldMap: Record<string, keyof NewAppointmentFormData> = {
+      title: 'title',
+      date: 'date',
+      start_time: 'startTime',
+      duration: 'duration',
+      event_type: 'eventType',
+      location: 'location',
+      doctor: 'doctor',
+      notes: 'notes',
     };
 
-    addEvent(newAppointment);
+    Object.entries(serverErrors).forEach(([field, message]) => {
+      const normalized = Array.isArray(message) ? message[0] : message;
+      const target = fieldMap[field];
+      if (target) {
+        setError(target, { type: 'server', message: normalized });
+        return;
+      }
 
-    reset();
-    closeEventModal();
+      setError('root', { type: 'server', message: normalized });
+    });
+  };
+
+  const getXsrfToken = () => {
+    if (typeof document === 'undefined') return null;
+    const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+    return match ? decodeURIComponent(match[1]) : null;
+  };
+
+  const ensureCsrfCookie = async () => {
+    if (getXsrfToken()) {
+      return;
+    }
+
+    await fetch('/sanctum/csrf-cookie', {
+      method: 'GET',
+      credentials: 'same-origin',
+    });
+  };
+
+  async function handleCreateNewAppointment(values: NewAppointmentFormData) {
+    clearErrors('root');
+    await ensureCsrfCookie();
+    const xsrf = getXsrfToken();
+    const durationInMinutes = Number(values.duration) || 60;
+
+    try {
+      const response = await fetch('/appointments', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          ...(xsrf ? { 'X-XSRF-TOKEN': xsrf } : {}),
+        },
+        body: JSON.stringify({
+          user_id: auth.user.id,
+          title: values.title,
+          date: values.date,
+          start_time: values.startTime,
+          duration: durationInMinutes,
+          event_type: values.eventType,
+          location: values.location || null,
+          doctor: values.doctor || null,
+          notes: values.notes || null,
+        }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 422) {
+          const data = await response.json();
+          if (data.errors) {
+            handleServerErrors(data.errors);
+          }
+          setError('root', {
+            type: 'server',
+            message:
+              data.message ??
+              'Não foi possível salvar a consulta. Verifique os dados informados.',
+          });
+          return;
+        }
+
+        throw new Error('Não foi possível salvar a consulta.');
+      }
+
+      reset();
+      closeEventModal();
+      refreshAppointments();
+    } catch (error) {
+      setError('root', {
+        type: 'server',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Não foi possível salvar a consulta.',
+      });
+    }
   }
 
   const eventTypes = [
@@ -117,11 +203,22 @@ export function NewAppointmentModal() {
     { value: 'red', label: 'Canceled / Alert', color: 'bg-red-200' },
   ];
 
+  const durationOptions = [
+    { value: '30', label: '30 minutos' },
+    { value: '60', label: '1 hora' },
+    { value: '90', label: '1h 30min' },
+    { value: '120', label: '2 horas' },
+    { value: '180', label: '3 horas' },
+  ];
+
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogChange}>
       <DialogContent className="sm:max-w-[500px] bg-[var(--color-surface)] text-[var(--color-text)]">
         <DialogHeader>
           <DialogTitle>New Appointment</DialogTitle>
+          <DialogDescription>
+            Informe os detalhes para criar uma nova consulta.
+          </DialogDescription>
         </DialogHeader>
 
         <form
@@ -170,13 +267,18 @@ export function NewAppointmentModal() {
                   <SelectValue placeholder="Select duration" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="0.5">30 minutes</SelectItem>
-                  <SelectItem value="1">1 hour</SelectItem>
-                  <SelectItem value="1.5">1.5 hours</SelectItem>
-                  <SelectItem value="2">2 hours</SelectItem>
-                  <SelectItem value="3">3 hours</SelectItem>
+                  {durationOptions.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
+              {errors.duration && (
+                <p className="text-sm text-red-500">
+                  {errors.duration.message}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -232,6 +334,10 @@ export function NewAppointmentModal() {
             />
           </div>
 
+          {errors.root && (
+            <p className="text-sm text-red-500">{errors.root.message}</p>
+          )}
+
           <DialogFooter>
             <Button
               type="button"
@@ -242,8 +348,12 @@ export function NewAppointmentModal() {
             </Button>
             <Button
               type="submit"
+              disabled={isSubmitting}
               className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 focus-visible:ring-2 focus-visible:ring-blue-500 transition"
             >
+              {isSubmitting && (
+                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Save Appointment
             </Button>
           </DialogFooter>

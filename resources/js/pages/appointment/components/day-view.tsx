@@ -1,3 +1,4 @@
+import { LoaderCircle } from 'lucide-react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 import { useEffect, useMemo, useState } from 'react';
@@ -7,7 +8,7 @@ import { EventCard } from './event-card';
 const HOURS = Array.from({ length: 14 }, (_, i) => i + 7);
 
 export function DayView() {
-  const { currentDate, events, openEventModal } = useCalendar();
+  const { currentDate, events, openEventModal, isLoading } = useCalendar();
   const [currentTime, setCurrentTime] = useState(dayjs());
 
   useEffect(() => {
@@ -56,6 +57,11 @@ export function DayView() {
         </div>
 
         <div className="relative px-6">
+          {isLoading && (
+            <div className="absolute inset-0 z-[9] flex items-center justify-center bg-[var(--color-surface)]/70 backdrop-blur">
+              <LoaderCircle className="h-6 w-6 animate-spin text-[var(--color-primary)]" />
+            </div>
+          )}
           {HOURS.map(hour => (
             <div
               key={hour}
