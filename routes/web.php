@@ -3,14 +3,42 @@
 use App\Http\Controllers\AppointmentController;
 use App\Http\Resources\AppointmentResource;
 use App\Http\Services\AppointmentService;
+use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
+
+Route::post('/sanctum/token', function (Request $request) {
+    $validated = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required', 'string'],
+        'device_name' => ['nullable', 'string', 'max:255'],
+    ]);
+
+    $user = User::where('email', $validated['email'])->first();
+
+    if (! $user || ! Hash::check($validated['password'], $user->password)) {
+        throw ValidationException::withMessages([
+            'email' => ['Credenciais inválidas.'],
+        ]);
+    }
+
+    $deviceName = $validated['device_name']
+        ?? $request->userAgent()
+        ?? 'velan_mobile';
+
+    $user->tokens()->where('name', $deviceName)->delete();
+    $token = $user->createToken($deviceName)->plainTextToken;
+
+    return response($token, headers: ['Content-Type' => 'text/plain']);
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
