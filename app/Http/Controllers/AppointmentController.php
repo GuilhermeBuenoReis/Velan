@@ -34,7 +34,9 @@ class AppointmentController extends Controller
     {
         $createAppointment = $this->appointmentService->store($appointmentRequest->validated());
 
-        return new AppointmentResource($createAppointment);
+        return (new AppointmentResource($createAppointment))
+            ->response()
+            ->setStatusCode(200);
     }
 
     /**

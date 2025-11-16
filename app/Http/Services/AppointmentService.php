@@ -15,6 +15,8 @@ class AppointmentService extends BaseService {
     }
 
     public function index(array $data) {
+        $data['user_id'] ??= auth()->id();
+
         return $this->appointmentRepository->index($data);
     }
 }
