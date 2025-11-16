@@ -5,7 +5,12 @@
         "build": "vite build",
         "build:ssr": "vite build && vite build --ssr",
         "dev": "vite",
-        "types": "tsc --noEmit"
+        "types": "tsc --noEmit",
+        "format": "npm run format:js && npm run format:php",
+        "format:js": "biome format resources/js --write",
+        "format:php": "vendor/bin/pint",
+        "lint": "npm run lint:js",
+        "lint:js": "biome check resources/js"
     },
     "devDependencies": {
         "@biomejs/biome": "2.2.6",
