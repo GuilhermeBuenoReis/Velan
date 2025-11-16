@@ -46,7 +46,8 @@ export function DashboardResultsExamsPagination({
                 isActive={page === currentPage}
                 className={cn(
                   'text-[var(--color-text-secondary)] hover:bg-white/10 hover:text-white/85 cursor-pointer rounded-full',
-                  page === currentPage && 'border-[color:var(--color-accent)] text-white'
+                  page === currentPage &&
+                    'border-[color:var(--color-accent)] text-white'
                 )}
               >
                 {page}

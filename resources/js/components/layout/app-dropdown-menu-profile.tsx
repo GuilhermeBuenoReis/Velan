@@ -11,10 +11,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useSidebar } from '@/components/ui/sidebar';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { logout } from '@/routes';
 import type { SharedData } from '@/types';
-import { useSidebar } from '@/components/ui/sidebar';
 
 function getInitials(name: string | undefined) {
   if (!name) return 'US';

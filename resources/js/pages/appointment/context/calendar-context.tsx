@@ -137,7 +137,10 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
   }, [appointments]);
 
   const requestAppointments = useCallback(
-    (target: { date?: dayjs.Dayjs; view?: CalendarView }, options?: { preserveScroll?: boolean }) => {
+    (
+      target: { date?: dayjs.Dayjs; view?: CalendarView },
+      options?: { preserveScroll?: boolean }
+    ) => {
       const nextDate = target.date ?? currentDate;
       const nextView = target.view ?? currentView;
       const formattedDate = nextDate.format('YYYY-MM-DD');

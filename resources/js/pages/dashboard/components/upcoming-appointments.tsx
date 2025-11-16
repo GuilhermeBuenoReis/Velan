@@ -133,7 +133,7 @@ export function DashboardUpcomingAppointments() {
                             variant="secondary"
                             className="shrink-0"
                             style={
-                              ({
+                              {
                                 borderColor: mixColor(
                                   appointment.status === 'Confirmada'
                                     ? 'var(--color-success)'
@@ -150,7 +150,7 @@ export function DashboardUpcomingAppointments() {
                                   appointment.status === 'Confirmada'
                                     ? 'var(--color-success)'
                                     : 'var(--color-warning)',
-                              } as CSSProperties)
+                              } as CSSProperties
                             }
                           >
                             {appointment.status}

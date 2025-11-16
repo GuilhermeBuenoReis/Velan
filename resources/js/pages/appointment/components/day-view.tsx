@@ -1,5 +1,5 @@
-import { LoaderCircle } from 'lucide-react';
 import dayjs from 'dayjs';
+import { LoaderCircle } from 'lucide-react';
 import 'dayjs/locale/pt-br';
 import { useEffect, useMemo, useState } from 'react';
 import { useCalendar } from '../context/calendar-context';

@@ -66,7 +66,9 @@ export function MonthView() {
                 >
                   <button
                     type="button"
-                    onClick={() => handleCreateAppointment(day, !isCurrentMonth)}
+                    onClick={() =>
+                      handleCreateAppointment(day, !isCurrentMonth)
+                    }
                     disabled={!isCurrentMonth}
                     className="absolute inset-0 z-[1]"
                   >
@@ -94,20 +96,13 @@ export function MonthView() {
                       {dayEvents.slice(0, 3).map(event => (
                         <Tooltip key={event.id}>
                           <TooltipTrigger asChild>
-                            <div
-                              role="button"
-                              tabIndex={0}
+                            <button
+                              type="button"
                               onClick={e => {
                                 e.stopPropagation();
                                 openEventModal({ event });
                               }}
-                              onKeyDown={e => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  openEventModal({ event });
-                                }
-                              }}
+                              aria-label={`View ${event.title}`}
                               className={`h-1.5 flex-1 min-w-[20px] rounded-full transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] ${eventColorClasses[event.color] ?? eventColorClasses.blue}`}
                             />
                           </TooltipTrigger>

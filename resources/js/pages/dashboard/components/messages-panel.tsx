@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Send } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useForm } from 'react-hook-form';
 import type { CSSProperties } from 'react';
+import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -79,7 +79,7 @@ export function DashboardMessagesPanel() {
         <div className="space-y-2">
           {messages.map((msg, index) => {
             const accent = 'var(--color-accent)';
-            const messageStyles: (CSSProperties & Record<string, string>) = {
+            const messageStyles: CSSProperties & Record<string, string> = {
               '--message-bg': msg.unread
                 ? mixColor(accent, 10)
                 : mixColor('var(--color-surface)', 5),
@@ -103,37 +103,37 @@ export function DashboardMessagesPanel() {
                 className="group p-4 rounded-xl cursor-pointer transition-all border bg-[var(--message-bg)] hover:bg-[var(--message-bg-hover)] border-[color:var(--message-border)]"
                 style={messageStyles}
               >
-              <div className="flex items-start gap-3">
-                <Avatar className="w-10 h-10 border-2 border-[color:var(--message-avatar-border)] shrink-0">
-                  {msg.avatar ? (
-                    <AvatarImage src={msg.avatar} />
-                  ) : (
-                    <AvatarFallback
-                      className="text-white"
-                      style={{
-                        background: 'var(--message-avatar-gradient)',
-                      }}
-                    >
-                      V
-                    </AvatarFallback>
-                  )}
-                </Avatar>
+                <div className="flex items-start gap-3">
+                  <Avatar className="w-10 h-10 border-2 border-[color:var(--message-avatar-border)] shrink-0">
+                    {msg.avatar ? (
+                      <AvatarImage src={msg.avatar} />
+                    ) : (
+                      <AvatarFallback
+                        className="text-white"
+                        style={{
+                          background: 'var(--message-avatar-gradient)',
+                        }}
+                      >
+                        V
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2 mb-1">
-                    <h4 className="text-sm truncate">{msg.sender}</h4>
-                    <span className="text-xs text-[var(--color-text-secondary)] shrink-0">
-                      {msg.time}
-                    </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <h4 className="text-sm truncate">{msg.sender}</h4>
+                      <span className="text-xs text-[var(--color-text-secondary)] shrink-0">
+                        {msg.time}
+                      </span>
+                    </div>
+                    <p className="text-sm text-[var(--color-text-secondary)] line-clamp-2">
+                      {msg.message}
+                    </p>
+                    {msg.unread && (
+                      <div className="w-2 h-2 rounded-full bg-[var(--color-chart-4)] shrink-0 mt-2" />
+                    )}
                   </div>
-                  <p className="text-sm text-[var(--color-text-secondary)] line-clamp-2">
-                    {msg.message}
-                  </p>
-                  {msg.unread && (
-                    <div className="w-2 h-2 rounded-full bg-[var(--color-chart-4)] shrink-0 mt-2" />
-                  )}
                 </div>
-              </div>
               </motion.div>
             );
           })}
